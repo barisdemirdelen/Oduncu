@@ -53,7 +53,7 @@ package {
 			}
 			
 			if (_mainMenu) {
-				StageHelper.stage.removeChild(_mainMenu);
+				StageHelper.remove(_mainMenu);
 				_mainMenu = null;
 			}
 			

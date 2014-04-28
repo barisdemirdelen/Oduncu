@@ -6,6 +6,7 @@ package {
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
 	import flash.events.TouchEvent;
+	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
@@ -49,7 +50,7 @@ package {
 		private var _muteButton:SimpleButton;
 		private var _unmuteButton:SimpleButton;
 		
-		private const _darbeArray:Array = ["normal", "average", "underwhelming", "overwhelming", "incredible", "amazing", "mindblowing", "proper", "adequate", "solid", "very_good", "good", "magnificent", "ordinary", "extraordinary", "unbelievable", "insane", "crazy", "weak", "impossible", "critical", "tremendous", "golden", "classy", "sneaky", "deadly", "bruiser"];
+		private const _darbeArray:Array = ["normal", "average", "underwhelming", "overwhelming", "incredible", "amazing", "mindblowing", "proper", "adequate", "solid", "veryGood", "good", "magnificent", "ordinary", "extraordinary", "unbelievable", "insane", "crazy", "weak", "impossible", "critical", "tremendous", "golden", "classy", "sneaky", "deadly", "bruiser"];
 		
 		public function GameManager(callback:Function) {
 			super(callback);
@@ -96,22 +97,21 @@ package {
 				_unmuteButton.visible = false;
 			}
 			
-			
 			_trees = new Array();
-			SoundManager.instance.playAgacWalkSound();
 			SoundManager.instance.playTestereCleanSound();
 			
 			_adam = _gameScene.getChildByName("adam") as MovieClip;
 			_gameScene.addEventListener(MouseEvent.CLICK, onClick);
 			_gameScene.addEventListener(TouchEvent.TOUCH_TAP, onClick);
 			
-			_gameHeight = _gameScene.height;
-			_gameWidth = _gameScene.width;
+			var _gameBounds:Rectangle = _gameScene.getChildByName("maskSprite").getBounds(StageHelper.stage);
+			_gameHeight = _gameBounds.height
+			_gameWidth = _gameBounds.width
 			
 			_textFormat = new TextFormat(new VisitorTT1BRK().fontName, 24, 0xff6600);
-			_scoreField = createTextField("Score: " + _score);
+			_scoreField = createTextField(LocaleUtil.localize("score") + ": " + _score);
 			_scoreField.x = 20;
-			_scoreField.y = 20;
+			_scoreField.y = 10;
 			_gameScene.addChild(_scoreField);
 			_gameScene.getChildByName("deathPopup").visible = false;
 			
@@ -122,43 +122,19 @@ package {
 			_gameTimer.start();
 		}
 		
-		private function onUnmutePressed(e:Event):void {
-			SoundManager.instance.setMuted(false);
-			_unmuteButton.visible = false;
-			_muteButton.visible = true;
-		}
-		
-		private function onMutePressed(e:Event):void {
-			SoundManager.instance.setMuted(true);
-			_unmuteButton.visible = true;
-			_muteButton.visible = false;
-		}
-		
-		private function onPausePressed(e:Event):void {
-			SoundManager.instance.pauseAll();
-			_paused = true;
-			_playButton.visible = true;
-			_pauseButton.visible = false;
-		}
-		
-		private function onPlayPressed(e:Event):void {
-			SoundManager.instance.unpauseAll();
-			_paused = false;
-			_playButton.visible = false;
-			_pauseButton.visible = true;
-		}
-		
 		private function onTick(e:TimerEvent):void {
 			if (_paused) {
 				return;
 			}
 			
+			if (_trees.length == 0) {
+				SoundManager.instance.stopAgacWalkSound();
+			}
+			
 			_score = int(getTimer() - _startTime)
-			_scoreField.text = LocaleUtil.localize("score")+": " + _score;
+			_scoreField.text = LocaleUtil.localize("score") + ": " + _score;
 			_treeSpeed *= 1499 / 1500;
 			_treeCreationRatio *= 1500 / 1499;
-			
-			//trace("tree speed: " + _treeSpeed + " tree creation ratio: " + _treeCreationRatio);
 			
 			if (_treeCreationRatio >= Math.random()) {
 				if (!_boss && _bossCreationRatio >= Math.random()) {
@@ -170,6 +146,10 @@ package {
 					newTree = new Tree(false);
 				}
 				
+				if (!SoundManager.instance.isAgacPlaying()) {
+					SoundManager.instance.playAgacWalkSound();
+				}
+				
 				var treeLayer:MovieClip = _gameScene.getChildByName("treeLayer") as MovieClip;
 				StageHelper.add(newTree.clip, treeLayer);
 				
@@ -177,15 +157,17 @@ package {
 				
 				var left:Boolean = Math.random() < 0.5;
 				if (left) {
-					newTree.clip.x = _gameWidth + bounds.width + 10;
+					newTree.facingRight = false;
+					newTree.clip.x = _gameWidth + bounds.left;
 					
-					eaze(newTree.clip).to(_treeSpeed, {x: -bounds.width - 10}).onComplete(onTreeDead, newTree);
+					eaze(newTree.clip).to(_treeSpeed, {x: -bounds.right}).onComplete(onTreeDead, newTree);
 					_trees.push(newTree);
 				} else {
+					newTree.facingRight = true;
 					newTree.clip.scaleX *= -1;
-					newTree.clip.x = -bounds.width - 10;
+					newTree.clip.x = -bounds.right;
 					
-					eaze(newTree.clip).to(20, {x: _gameWidth}).onComplete(onTreeDead, tree);
+					eaze(newTree.clip).to(_treeSpeed, {x: _gameWidth + bounds.left}).onComplete(onTreeDead, tree);
 					_trees.push(newTree);
 				}
 			}
@@ -197,7 +179,15 @@ package {
 				if (_adam.getChildByName("hit").hitTestObject(tree.clip.getChildByName("hitboxSprite"))) {
 					tree.dying = true;
 					var treeBounds:Rectangle = tree.clip.getBounds(StageHelper.stage);
-					eaze(tree.clip).to(2, {y: _gameHeight + treeBounds.height}).onComplete(onTreeDead, tree);
+					if (tree.isBoss) {
+						eaze(tree.clip).to(4, {y: _gameHeight + treeBounds.top}).onComplete(onTreeDead, tree);
+					} else {
+						if (tree.facingRight) {
+							eaze(tree.clip).to(4, {y: _gameHeight + treeBounds.top, rotation: -100}).onComplete(onTreeDead, tree);
+						} else {
+							eaze(tree.clip).to(4, {y: _gameHeight + treeBounds.top, rotation: 100}).onComplete(onTreeDead, tree);
+						}
+					}
 					var y:Number = _gameHeight - 100 * Math.random();
 					var x:Number = _gameWidth / 2 - Math.random() * 100;
 					if (_adam.currentLabel == "right") {
@@ -210,7 +200,7 @@ package {
 					eaze(hitScoreText).to(2, {y: -50}).onComplete(onHitScoreFinished, hitScoreText);
 					
 					var randomDarbe:String = _darbeArray[Math.floor(Math.random() * _darbeArray.length)];
-					var localizedDarbe:String = LocaleUtil.localize(randomDarbe) +" "+LocaleUtil.localize("blow")+"!";
+					var localizedDarbe:String = LocaleUtil.localize(randomDarbe) + " " + LocaleUtil.localize("blow") + "!";
 					var darbeText:TextField = createTextField(localizedDarbe);
 					y = _gameHeight - 100 * Math.random();
 					x = _gameWidth / 2 + Math.random() * 100;
@@ -250,11 +240,12 @@ package {
 		}
 		
 		private function onFinished(e:Event):void {
-			_gameScene.getChildByName("deathPopup").visible = true;
-			((_gameScene.getChildByName("deathPopup") as MovieClip).getChildByName("deathText") as TextField).text = LocaleUtil.localize("deathText");
-			((_gameScene.getChildByName("deathPopup") as MovieClip).getChildByName("scoreText") as TextField).text = LocaleUtil.localize("score")+": " + _score;
-			((_gameScene.getChildByName("deathPopup") as MovieClip).getChildByName("menuButton")).addEventListener(MouseEvent.CLICK, onMenuPressed);
-			((_gameScene.getChildByName("deathPopup") as MovieClip).getChildByName("menuButton")).addEventListener(TouchEvent.TOUCH_TAP, onMenuPressed);
+			var deathPopup:MovieClip = _gameScene.getChildByName("deathPopup") as MovieClip;
+			deathPopup.visible = true;
+			(deathPopup.getChildByName("deathText") as TextField).text = LocaleUtil.localize("deathText");
+			(deathPopup.getChildByName("scoreText") as TextField).text = LocaleUtil.localize("score") + ": " + _score;
+			(deathPopup.getChildByName("menuButton")).addEventListener(MouseEvent.CLICK, onMenuPressed);
+			(deathPopup.getChildByName("menuButton")).addEventListener(TouchEvent.TOUCH_TAP, onMenuPressed);
 		}
 		
 		private function onMenuPressed(e:Event):void {
@@ -305,6 +296,32 @@ package {
 			textField.height = 50;
 			textField.selectable = false;
 			return textField;
+		}
+		
+		private function onUnmutePressed(e:Event):void {
+			SoundManager.instance.setMuted(false);
+			_unmuteButton.visible = false;
+			_muteButton.visible = true;
+		}
+		
+		private function onMutePressed(e:Event):void {
+			SoundManager.instance.setMuted(true);
+			_unmuteButton.visible = true;
+			_muteButton.visible = false;
+		}
+		
+		private function onPausePressed(e:Event):void {
+			SoundManager.instance.pauseAll();
+			_paused = true;
+			_playButton.visible = true;
+			_pauseButton.visible = false;
+		}
+		
+		private function onPlayPressed(e:Event):void {
+			SoundManager.instance.unpauseAll();
+			_paused = false;
+			_playButton.visible = false;
+			_pauseButton.visible = true;
 		}
 		
 		override protected function destroy(e:Event = null):void {

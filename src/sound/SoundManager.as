@@ -22,9 +22,9 @@
 
 			bossSound = new OduncuSound(new bossSoundObject(),0.8);
 			testereCleanSound = new OduncuSound(new testereCleanSoundObject(),0.4);
-			testereTurnOnSound = new OduncuSound(new testereTurnOnSoundObject(),0.7);
+			testereTurnOnSound = new OduncuSound(new testereTurnOnSoundObject(),0.4);
 			testereHitSound = new OduncuSound(new testereHitSoundObject(),0.4);
-			agacWalkSound = new OduncuSound(new agacWalkSoundObject(),0.6);
+			agacWalkSound = new OduncuSound(new agacWalkSoundObject(),0.4);
 		}
 		
 		public static function get instance():SoundManager {

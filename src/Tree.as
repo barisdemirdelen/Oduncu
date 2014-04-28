@@ -10,6 +10,7 @@ package {
 		private var _clip:MovieClip;
 		private var _isBoss:Boolean = false;
 		private var _dying:Boolean = false;
+		private var _facingRight:Boolean = false;
 		
 		public function Tree(boss:Boolean = false) {
 			if (boss) {
@@ -49,6 +50,14 @@ package {
 		
 		public function set dying(value:Boolean):void {
 			_dying = value;
+		}
+		
+		public function get facingRight():Boolean {
+			return _facingRight;
+		}
+		
+		public function set facingRight(value:Boolean):void {
+			_facingRight = value;
 		}
 	
 	}

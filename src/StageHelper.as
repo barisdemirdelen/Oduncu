@@ -39,7 +39,7 @@ package {
 		}
 		
 		public static function remove(displayObject:DisplayObject):void {
-			_stage.removeChild(displayObject);
+			displayObject.parent.removeChild(displayObject);;
 		}
 		
 		static public function get stage():Stage {
