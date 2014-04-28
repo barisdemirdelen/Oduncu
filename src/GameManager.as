@@ -49,7 +49,7 @@ package {
 		private var _muteButton:SimpleButton;
 		private var _unmuteButton:SimpleButton;
 		
-		private const _darbeArray:Array = ["normal hit!", "average hit!", "underwhelming hit!", "overwhelming hit!", "incredible hit!", "amazing hit!", "mindblowing hit!", "proper hit!", "adequate hit!", "solid hit!", "very good hit!", "good hit!", "magnificent hit!", "ordinary hit!", "extraordinary hit!", "unbelievable hit!", "insane hit!", "crazy hit!", "weak hit!", "impossible hit!", "critical hit!", "tremendous hit!", "golden hit!", "classy hit!", "sneaky hit!", "deadly hit!", "bruiser hit!"];
+		private const _darbeArray:Array = ["normal", "average", "underwhelming", "overwhelming", "incredible", "amazing", "mindblowing", "proper", "adequate", "solid", "very_good", "good", "magnificent", "ordinary", "extraordinary", "unbelievable", "insane", "crazy", "weak", "impossible", "critical", "tremendous", "golden", "classy", "sneaky", "deadly", "bruiser"];
 		
 		public function GameManager(callback:Function) {
 			super(callback);
@@ -63,7 +63,7 @@ package {
 			_dead = false;
 			_boss = null;
 			_bossCreationRatio = 0.05;
-			_treeCreationRatio = 0.01;
+			_treeCreationRatio = 0.025;
 			_paused = false;
 			
 			_gameScene = new gameSceneSprite();
@@ -154,7 +154,7 @@ package {
 			}
 			
 			_score = int(getTimer() - _startTime)
-			_scoreField.text = "Score: " + _score;
+			_scoreField.text = LocaleUtil.localize("score")+": " + _score;
 			_treeSpeed *= 1499 / 1500;
 			_treeCreationRatio *= 1500 / 1499;
 			
@@ -210,7 +210,8 @@ package {
 					eaze(hitScoreText).to(2, {y: -50}).onComplete(onHitScoreFinished, hitScoreText);
 					
 					var randomDarbe:String = _darbeArray[Math.floor(Math.random() * _darbeArray.length)];
-					var darbeText:TextField = createTextField(randomDarbe);
+					var localizedDarbe:String = LocaleUtil.localize(randomDarbe) +" "+LocaleUtil.localize("blow")+"!";
+					var darbeText:TextField = createTextField(localizedDarbe);
 					y = _gameHeight - 100 * Math.random();
 					x = _gameWidth / 2 + Math.random() * 100;
 					if (_adam.currentLabel == "right") {
@@ -250,7 +251,8 @@ package {
 		
 		private function onFinished(e:Event):void {
 			_gameScene.getChildByName("deathPopup").visible = true;
-			((_gameScene.getChildByName("deathPopup") as MovieClip).getChildByName("scoreText") as TextField).text = "Score: " + _score;
+			((_gameScene.getChildByName("deathPopup") as MovieClip).getChildByName("deathText") as TextField).text = LocaleUtil.localize("deathText");
+			((_gameScene.getChildByName("deathPopup") as MovieClip).getChildByName("scoreText") as TextField).text = LocaleUtil.localize("score")+": " + _score;
 			((_gameScene.getChildByName("deathPopup") as MovieClip).getChildByName("menuButton")).addEventListener(MouseEvent.CLICK, onMenuPressed);
 			((_gameScene.getChildByName("deathPopup") as MovieClip).getChildByName("menuButton")).addEventListener(TouchEvent.TOUCH_TAP, onMenuPressed);
 		}

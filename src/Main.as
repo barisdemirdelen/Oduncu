@@ -1,23 +1,18 @@
 package {
-	import flash.desktop.NativeApplication;
-	import flash.display.MovieClip;
-	import flash.display.SimpleButton;
-	import flash.events.Event;
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
-	import flash.events.MouseEvent;
+	import flash.events.Event;
 	import flash.events.TimerEvent;
-	import flash.events.TouchEvent;
-	import flash.text.TextField;
 	import flash.ui.Multitouch;
 	import flash.ui.MultitouchInputMode;
-	import flash.utils.Timer;
 	
 	/**
 	 * ...
 	 * @author Barış Demirdelen
 	 */
+	
+	[ResourceBundle("resources")]
 	public class Main extends Sprite {
 		
 		public function Main():void {
@@ -26,6 +21,8 @@ package {
 			stage.addEventListener(Event.DEACTIVATE, deactivate);
 			Multitouch.inputMode = MultitouchInputMode.TOUCH_POINT;
 			StageHelper.stage = stage;
+			LocaleUtil.initialize();
+			
 			startAnimation();
 		}
 		

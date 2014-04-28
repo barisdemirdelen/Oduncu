@@ -2,7 +2,7 @@
 <application xmlns="http://ns.adobe.com/air/application/4.0">
 	
 	<id>bar.Oduncu</id>
-	<versionNumber>1.0</versionNumber>
+	<versionNumber>1.0.1</versionNumber>
 	<supportedProfiles>mobileDevice</supportedProfiles>
 	<filename>Oduncu</filename>
 	
