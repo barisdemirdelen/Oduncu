@@ -18,6 +18,7 @@
   <classpaths>
     <class path="src" />
     <class path="lib\EazeTween" />
+    <class path="lib\Starling" />
   </classpaths>
   <!-- Build options -->
   <build>

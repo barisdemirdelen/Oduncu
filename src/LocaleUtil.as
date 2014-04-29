@@ -8,6 +8,7 @@ package {
 	 * @author Barış Demirdelen
 	 */
 	
+	[ResourceBundle("strings")]
 	public class LocaleUtil {
 		
 		private static var _locale:String;
@@ -33,8 +34,7 @@ package {
 		
 		public static function localize(text:String):String {
 			var resourceManager:IResourceManager = ResourceManager.getInstance();
-			//resourceManager.localeChain = [_locale];
-			var localizedString:String = resourceManager.getString("resources", text, null, _locale);
+			var localizedString:String = resourceManager.getString("strings", text, null, _locale);
 			return  localizedString != "undefined" && localizedString!= null ? localizedString : text;
 		}
 	

@@ -1,4 +1,5 @@
 package {
+	import flash.desktop.NativeApplication;
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
@@ -12,7 +13,6 @@ package {
 	 * @author Barış Demirdelen
 	 */
 	
-	[ResourceBundle("resources")]
 	public class Main extends Sprite {
 		
 		public function Main():void {
@@ -39,7 +39,7 @@ package {
 		}
 		
 		private function deactivate(e:Event):void {
-			//NativeApplication.nativeApplication.exit();
+			NativeApplication.nativeApplication.exit();
 		}
 	
 	}

@@ -2,7 +2,7 @@
 <application xmlns="http://ns.adobe.com/air/application/4.0">
 	
 	<id>bar.Oduncu</id>
-	<versionNumber>1.0.1</versionNumber>
+	<versionNumber>1.0.2</versionNumber>
 	<supportedProfiles>mobileDevice</supportedProfiles>
 	<filename>Oduncu</filename>
 	
@@ -38,7 +38,7 @@
 				<!-- iPhone support -->
 				<string>1</string> 
 				<!-- iPad support -->
-				<!--<string>2</string>-->
+				<string>2</string>
 			</array>
 				
         ]]></InfoAdditions> 

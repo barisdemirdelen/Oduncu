@@ -2,12 +2,14 @@ package {
 	import aze.motion.eaze;
 	import flash.display.MovieClip;
 	import flash.display.SimpleButton;
+	import flash.events.AccelerometerEvent;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
 	import flash.events.TouchEvent;
 	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
+	import flash.sensors.Accelerometer;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 	import flash.utils.getTimer;
@@ -50,6 +52,9 @@ package {
 		private var _muteButton:SimpleButton;
 		private var _unmuteButton:SimpleButton;
 		
+		private var _accelerometer:Accelerometer;
+		private var _adamSpeed:Number;
+		
 		private const _darbeArray:Array = ["normal", "average", "underwhelming", "overwhelming", "incredible", "amazing", "mindblowing", "proper", "adequate", "solid", "veryGood", "good", "magnificent", "ordinary", "extraordinary", "unbelievable", "insane", "crazy", "weak", "impossible", "critical", "tremendous", "golden", "classy", "sneaky", "deadly", "bruiser"];
 		
 		public function GameManager(callback:Function) {
@@ -65,6 +70,7 @@ package {
 			_boss = null;
 			_bossCreationRatio = 0.05;
 			_treeCreationRatio = 0.025;
+			_adamSpeed = 0;
 			_paused = false;
 			
 			_gameScene = new gameSceneSprite();
@@ -115,11 +121,21 @@ package {
 			_gameScene.addChild(_scoreField);
 			_gameScene.getChildByName("deathPopup").visible = false;
 			
-			_startTime = getTimer()
+			_startTime = getTimer();
+			
+			_accelerometer = new Accelerometer();
+			if (Accelerometer.isSupported) {
+				//_accelerometer.addEventListener(AccelerometerEvent.UPDATE, onAccelerometerUpdate);
+			}
 			
 			_gameTimer = new Timer(50);
 			_gameTimer.addEventListener(TimerEvent.TIMER, onTick);
 			_gameTimer.start();
+		}
+		
+		private function onAccelerometerUpdate(e:AccelerometerEvent):void {
+			trace(e.accelerationX);
+			_adamSpeed -= e.accelerationX;
 		}
 		
 		private function onTick(e:TimerEvent):void {
@@ -130,6 +146,9 @@ package {
 			if (_trees.length == 0) {
 				SoundManager.instance.stopAgacWalkSound();
 			}
+			
+			
+			_adam.x += _adamSpeed;
 			
 			_score = int(getTimer() - _startTime)
 			_scoreField.text = LocaleUtil.localize("score") + ": " + _score;
@@ -280,7 +299,7 @@ package {
 				var touchEvent:TouchEvent = e as TouchEvent;
 				stageX = touchEvent.stageX;
 			}
-			if (stageX <= StageHelper.stage.fullScreenWidth / 2) {
+			if (stageX <= _adam.x) {
 				_adam.gotoAndPlay("left");
 			} else {
 				_adam.gotoAndPlay("right");
