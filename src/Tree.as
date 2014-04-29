@@ -1,5 +1,5 @@
 package {
-	import flash.display.MovieClip;
+	import starling.display.MovieClip;
 	
 	/**
 	 * ...
@@ -14,15 +14,14 @@ package {
 		
 		public function Tree(boss:Boolean = false) {
 			if (boss) {
-				_clip = new bossSprite();
+				//_clip = new bossSprite();
 				_isBoss = true;
 			} else {
-				_clip = new treeSprite();
+				_clip = Assets.getMovieClip("sagdan");
 				
-				var randomAnimationId:int = Math.floor(Math.random() * 8 + 1);
-				_clip.gotoAndPlay("anim" + randomAnimationId);
+				//var randomAnimationId:int = Math.floor(Math.random() * 8 + 1);
+				//_clip.gotoAndPlay("anim" + randomAnimationId);
 			}
-			_clip.tree = this;
 		}
 		
 		public function destroy():void {
