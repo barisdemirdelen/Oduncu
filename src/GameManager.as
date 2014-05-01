@@ -139,7 +139,19 @@ package {
 		}
 		
 		private function onTick(e:TimerEvent):void {
+			if (_dead) {
+				for each (var tree2:Tree in _trees) {
+					tree2.clip.scaleX  *= -1;
+					if(tree2.clip.scaleX<0) {
+						tree2.clip.x += tree2.clip.width
+					} else {
+						tree2.clip.x -= tree2.clip.width
+					}
+				}
+				return;
+			}
 			if (_paused) {
+				
 				return;
 			}
 			
@@ -241,9 +253,9 @@ package {
 					_dead = true;
 					SoundManager.instance.stopAgacWalkSound();
 					SoundManager.instance.stopBossSound();
-					_gameTimer.removeEventListener(TimerEvent.TIMER, onTick);
-					_gameTimer.stop();
-					_gameTimer = null;
+					//_gameTimer.removeEventListener(TimerEvent.TIMER, onTick);
+					//_gameTimer.stop();
+					//_gameTimer = null;
 					_finishTimer = new Timer(3000, 1);
 					_finishTimer.addEventListener(TimerEvent.TIMER, onFinished);
 					_finishTimer.start();
