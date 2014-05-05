@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
-<!-- $TexturePacker:SmartUpdate:4789c802779b84b742e040fee8672fa0:c522969e3704b6f448a9710433470410:4f5c8d350958f46ba78e1ca4ac1017b9$ -->
+<!-- $TexturePacker:SmartUpdate:10a5d4cfbdfa5a1e6497a28478f7fb0c:e13468c4c6d23b9a10d997c67ea8062a:4f5c8d350958f46ba78e1ca4ac1017b9$ -->
 <TextureAtlas imagePath="images1.png">
-    <SubTexture name="adamNormalSprite0001" x="901" y="1740" width="77" height="97" frameX="-381" frameY="-223" frameWidth="827" frameHeight="363"/>
-    <SubTexture name="adamNormalSprite0002" x="917" y="1591" width="77" height="97" frameX="-381" frameY="-223" frameWidth="827" frameHeight="363"/>
     <SubTexture name="adamSprite0007" x="822" y="1740" width="77" height="103" frameX="-381" frameY="-222" frameWidth="827" frameHeight="363"/>
     <SubTexture name="adamSprite0008" x="865" y="149" width="87" height="121" frameX="-371" frameY="-206" frameWidth="827" frameHeight="363"/>
     <SubTexture name="adamSprite0009" x="923" y="2" width="95" height="143" frameX="-363" frameY="-188" frameWidth="827" frameHeight="363"/>
@@ -23,6 +21,8 @@
     <SubTexture name="bossarkaplan2" x="2" y="1274" width="800" height="400"/>
     <SubTexture name="cimenler" x="2" y="1734" width="800" height="14" frameX="0" frameY="-386" frameWidth="800" frameHeight="400"/>
     <SubTexture name="kesilmisodunlar" x="2" y="1676" width="800" height="56" frameX="0" frameY="-344" frameWidth="800" frameHeight="400"/>
+    <SubTexture name="sagadogru1" x="901" y="1740" width="77" height="97" frameX="-22" frameY="-2" frameWidth="103" frameHeight="105"/>
+    <SubTexture name="sagadogru2" x="917" y="1591" width="77" height="97" frameX="-22" frameY="-2" frameWidth="103" frameHeight="105"/>
     <SubTexture name="sagdan1new" x="804" y="708" width="122" height="293" frameX="-30" frameY="-12" frameWidth="152" frameHeight="305"/>
     <SubTexture name="sagdan2new" x="804" y="1298" width="122" height="291" frameX="-26" frameY="-14" frameWidth="152" frameHeight="305"/>
     <SubTexture name="sagdan3new" x="804" y="1003" width="122" height="293" frameX="-26" frameY="-12" frameWidth="152" frameHeight="305"/>

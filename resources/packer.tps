@@ -195,8 +195,8 @@
             <filename>adamSekans/adamSprite0017.png</filename>
             <filename>adamSekans/adamSprite0018.png</filename>
             <filename>adamSekans/adamSprite0019.png</filename>
-            <filename>adamSekans/adamNormalSprite0001.png</filename>
-            <filename>adamSekans/adamNormalSprite0002.png</filename>
+            <filename>adam/sagadogru2.png</filename>
+            <filename>adam/sagadogru1.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
