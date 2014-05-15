@@ -14,7 +14,7 @@ package {
 		
 		public function Tree(boss:Boolean = false) {
 			if (boss) {
-				//_clip = new bossSprite();
+				_clip = Assets.getMovieClip("bossagac");
 				_isBoss = true;
 			} else {
 				_clip = Assets.getMovieClip("sagdan");
