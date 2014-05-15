@@ -24,8 +24,9 @@ package {
 		
 		override protected function init():void {
 			super.init();
+			FlashStageHelper.stage.frameRate = 30;
 			_mainMenu = new mainMenuSprite();
-			StageHelper.add(_mainMenu);
+			FlashStageHelper.add(_mainMenu);
 			
 			_startButton = _mainMenu.getChildByName("startButton") as SimpleButton;
 			_startButton.addEventListener(TouchEvent.TOUCH_TAP, onStartClick);
@@ -53,7 +54,7 @@ package {
 			}
 			
 			if (_mainMenu) {
-				StageHelper.remove(_mainMenu);
+				FlashStageHelper.remove(_mainMenu);
 				_mainMenu = null;
 			}
 			

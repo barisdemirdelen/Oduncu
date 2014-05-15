@@ -1,6 +1,8 @@
 ﻿package sound{
 
 	import flash.events.Event;
+	import flash.media.AudioPlaybackMode;
+	import flash.media.SoundMixer;
 
 	public class SoundManager {
 		
@@ -19,7 +21,7 @@
 				return;
 			}
 			muted = false;
-
+			SoundMixer.audioPlaybackMode = AudioPlaybackMode.AMBIENT;
 			bossSound = new OduncuSound(new bossSoundObject(),0.8);
 			testereCleanSound = new OduncuSound(new testereCleanSoundObject(),0.4);
 			testereTurnOnSound = new OduncuSound(new testereTurnOnSoundObject(),0.4);

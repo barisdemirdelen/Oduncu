@@ -22,14 +22,14 @@ package {
 			super.init();
 			
 			_introAnimation = new introAnimationSprite();
-			StageHelper.add(_introAnimation);
+			FlashStageHelper.add(_introAnimation);
 			
 			_skipButton = new skipButtonSprite();
-			_skipButton.x = StageHelper.stage.fullScreenWidth - 100;
-			_skipButton.y = StageHelper.stage.fullScreenHeight - 100;
+			_skipButton.x = FlashStageHelper.stage.fullScreenWidth - 100;
+			_skipButton.y = FlashStageHelper.stage.fullScreenHeight - 100;
 			_skipButton.addEventListener(TouchEvent.TOUCH_TAP, onSkipClick);
 			_skipButton.addEventListener(MouseEvent.CLICK, onSkipClick);
-			StageHelper.add(_skipButton);
+			FlashStageHelper.add(_skipButton);
 			
 			_introAnimation.addEventListener(Event.ENTER_FRAME, onAnimationTick);
 		}
@@ -47,14 +47,14 @@ package {
 		override protected function destroy(e:Event = null):void {
 			if (_introAnimation) {
 				_introAnimation.removeEventListener(Event.ENTER_FRAME, onAnimationTick);
-				StageHelper.stage.removeChild(_introAnimation);
+				FlashStageHelper.stage.removeChild(_introAnimation);
 				_introAnimation = null;
 			}
 			
 			if (_skipButton) {
 				_skipButton.removeEventListener(TouchEvent.TOUCH_TAP, onSkipClick);
 				_skipButton.removeEventListener(MouseEvent.MOUSE_DOWN, onSkipClick);
-				StageHelper.stage.removeChild(_skipButton);
+				FlashStageHelper.stage.removeChild(_skipButton);
 				_skipButton = null;
 			}
 			

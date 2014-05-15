@@ -1,20 +1,31 @@
 package {
+	import aze.motion.easing.Linear;
 	import aze.motion.eaze;
-	import flash.display.MovieClip;
 	import flash.display.SimpleButton;
 	import flash.events.AccelerometerEvent;
 	import flash.events.Event;
-	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
-	import flash.events.TouchEvent;
-	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
 	import flash.sensors.Accelerometer;
-	import flash.text.TextField;
+	import flash.system.Capabilities;
 	import flash.text.TextFormat;
 	import flash.utils.getTimer;
 	import flash.utils.Timer;
+	import so.cuo.platform.admob.Admob;
+	import so.cuo.platform.admob.AdmobEvent;
+	import so.cuo.platform.admob.AdmobPosition;
 	import sound.SoundManager;
+	import starling.core.Starling;
+	import starling.display.Button;
+	import starling.display.MovieClip;
+	import starling.display.Quad;
+	import starling.display.Sprite;
+	import starling.display.Stage;
+	import starling.events.Touch;
+	import starling.events.TouchEvent;
+	import starling.events.TouchPhase;
+	import starling.text.TextField;
+	import starling.utils.HAlign;
 	
 	/**
 	 * ...
@@ -22,8 +33,9 @@ package {
 	 */
 	public class GameManager extends BurgerManager {
 		
-		private var _gameScene:MovieClip;
+		private var _gameScene:Sprite;
 		private var _adam:MovieClip;
+		private var _adamPatlama:MovieClip;
 		
 		private var _gameTimer:Timer;
 		private var _finishTimer:Timer
@@ -55,6 +67,18 @@ package {
 		private var _accelerometer:Accelerometer;
 		private var _adamSpeed:Number;
 		
+		private var _stage:Stage;
+		private var _treeLayer:Sprite;
+		
+		private const _adamOffset:Number = 5;
+		private var _backgroundSprite:Sprite;
+		
+		private const ADAM_PATLAMA:Rectangle = new Rectangle(-319, -30, 551, -148);
+		private const ADAM_HITBOX:Rectangle = new Rectangle(28, 10, 29, 87);
+		private const SAW_HITBOX:Rectangle = new Rectangle(57, 53, 38, 20);
+		private const TREE_HITBOX:Rectangle = new Rectangle(65, 28, 42, 276);
+		private const BOSS_HITBOX:Rectangle = new Rectangle(11, 149, 532, 400);
+		
 		private const _darbeArray:Array = ["normal", "average", "underwhelming", "overwhelming", "incredible", "amazing", "mindblowing", "proper", "adequate", "solid", "veryGood", "good", "magnificent", "ordinary", "extraordinary", "unbelievable", "insane", "crazy", "weak", "impossible", "critical", "tremendous", "golden", "classy", "sneaky", "deadly", "bruiser"];
 		
 		public function GameManager(callback:Function) {
@@ -64,6 +88,8 @@ package {
 		override protected function init():void {
 			super.init();
 			
+			FlashStageHelper.stage.frameRate = 60;
+			_stage = Starling.current.stage;
 			_treeSpeed = 30;
 			_score = 0;
 			_dead = false;
@@ -73,64 +99,67 @@ package {
 			_adamSpeed = 0;
 			_paused = false;
 			
-			_gameScene = new gameSceneSprite();
-			StageHelper.add(_gameScene);
+			_gameScene = new Sprite();
+			_stage.addChild(_gameScene);
 			
-			_playButton = _gameScene.getChildByName("playButton") as SimpleButton;
-			_pauseButton = _gameScene.getChildByName("pauseButton") as SimpleButton;
-			_muteButton = _gameScene.getChildByName("muteButton") as SimpleButton;
-			_unmuteButton = _gameScene.getChildByName("unmuteButton") as SimpleButton;
+			_backgroundSprite = new Sprite();
+			_backgroundSprite.addChild(Assets.getMovieClip("arkaplan"));
+			_gameScene.addChild(_backgroundSprite);
+			_gameScene.addChild(Assets.getMovieClip("kesilmisodunlar"));
 			
-			_playButton.addEventListener(MouseEvent.CLICK, onPlayPressed);
-			_playButton.addEventListener(TouchEvent.TOUCH_TAP, onPlayPressed);
+			_treeLayer = new Sprite();
+			_gameScene.addChild(_treeLayer);
 			
-			_pauseButton.addEventListener(MouseEvent.CLICK, onPausePressed);
-			_pauseButton.addEventListener(TouchEvent.TOUCH_TAP, onPausePressed);
+			_adam = Assets.getMovieClip("sagadogru");
+			_adamPatlama = Assets.getMovieClip("adamSprite");
+			_adamPatlama.loop = false;
+			_adamPatlama.stop();
 			
-			_muteButton.addEventListener(MouseEvent.CLICK, onMutePressed);
-			_muteButton.addEventListener(TouchEvent.TOUCH_TAP, onMutePressed);
+			_adam.y = _stage.stageHeight - _adam.height + 5;
+			_adam.x = _stage.stageWidth / 2 - _adam.width / 2;
+			_gameScene.addChild(_adam);
+			_gameScene.addChild(Assets.getMovieClip("cimenler"));
 			
-			_unmuteButton.addEventListener(MouseEvent.CLICK, onUnmutePressed);
-			_unmuteButton.addEventListener(TouchEvent.TOUCH_TAP, onUnmutePressed);
-			
-			_playButton.visible = false;
-			_pauseButton.visible = false;
-			if (SoundManager.instance.isMuted()) {
-				_unmuteButton.visible = true;
-				_muteButton.visible = false;
+			var admob:Admob = Admob.getInstance(); //create a instance
+			trace(admob.supportDevice);
+			if (Capabilities.manufacturer.toLowerCase().indexOf("ios") != -1) { //ios
+				//ios
+				admob.setKeys("ca-app-pub-7819139870608872/4507989657")
 			} else {
-				_muteButton.visible = true;
-				_unmuteButton.visible = false;
+				admob.setKeys("ca-app-pub-7819139870608872/9077790053")
 			}
+			admob.addEventListener(AdmobEvent.onBannerReceive, onAdReceived);
+			admob.addEventListener(AdmobEvent.onBannerFailedReceive, onAdFailed);
+			admob.enableTrace = true;
+			trace(admob.getScreenSize());
+			admob.showBanner(Admob.BANNER, AdmobPosition.TOP_CENTER);
 			
 			_trees = new Array();
 			SoundManager.instance.playTestereCleanSound();
-			
-			_adam = _gameScene.getChildByName("adam") as MovieClip;
-			_gameScene.addEventListener(MouseEvent.CLICK, onClick);
-			_gameScene.addEventListener(TouchEvent.TOUCH_TAP, onClick);
-			
-			var _gameBounds:Rectangle = _gameScene.getChildByName("maskSprite").getBounds(StageHelper.stage);
-			_gameHeight = _gameBounds.height
-			_gameWidth = _gameBounds.width
-			
-			_textFormat = new TextFormat(new VisitorTT1BRK().fontName, 24, 0xff6600);
+			_gameScene.addEventListener(TouchEvent.TOUCH, onClick);
 			_scoreField = createTextField(LocaleUtil.localize("score") + ": " + _score);
-			_scoreField.x = 20;
-			_scoreField.y = 10;
+			_scoreField.x = 150;
+			_scoreField.y = 5;
+			_scoreField.hAlign = HAlign.LEFT;
 			_gameScene.addChild(_scoreField);
-			_gameScene.getChildByName("deathPopup").visible = false;
-			
 			_startTime = getTimer();
-			
-			_accelerometer = new Accelerometer();
-			if (Accelerometer.isSupported) {
-				//_accelerometer.addEventListener(AccelerometerEvent.UPDATE, onAccelerometerUpdate);
-			}
-			
+			//
+			//_accelerometer = new Accelerometer();
+			//if (Accelerometer.isSupported) {
+			////_accelerometer.addEventListener(AccelerometerEvent.UPDATE, onAccelerometerUpdate);
+			//}
+			//
 			_gameTimer = new Timer(50);
 			_gameTimer.addEventListener(TimerEvent.TIMER, onTick);
 			_gameTimer.start();
+		}
+		
+		private function onAdFailed(e:AdmobEvent):void {
+			trace(e.data);
+		}
+		
+		private function onAdReceived(e:AdmobEvent):void {
+			trace(e.data.width, e.data.height);
 		}
 		
 		private function onAccelerometerUpdate(e:AccelerometerEvent):void {
@@ -158,98 +187,113 @@ package {
 			if (_trees.length == 0) {
 				SoundManager.instance.stopAgacWalkSound();
 			}
-			
-			
-			_adam.x += _adamSpeed;
-			
 			_score = int(getTimer() - _startTime)
 			_scoreField.text = LocaleUtil.localize("score") + ": " + _score;
 			_treeSpeed *= 1499 / 1500;
 			_treeCreationRatio *= 1500 / 1499;
-			
+			//
 			if (_treeCreationRatio >= Math.random()) {
 				if (!_boss && _bossCreationRatio >= Math.random()) {
-					var newTree:Tree = new Tree(true);
+					newTree = new Tree(true);
 					_boss = newTree;
-					_gameScene.gotoAndPlay("boss");
+					_backgroundSprite.removeChildren();
+					_backgroundSprite.addChild(Assets.getMovieClip("bossarkaplan"));
 					SoundManager.instance.playBossSound();
 				} else {
-					newTree = new Tree(false);
+					var newTree:Tree = new Tree(false);
 				}
-				
 				if (!SoundManager.instance.isAgacPlaying()) {
 					SoundManager.instance.playAgacWalkSound();
 				}
-				
-				var treeLayer:MovieClip = _gameScene.getChildByName("treeLayer") as MovieClip;
-				StageHelper.add(newTree.clip, treeLayer);
-				
-				var bounds:Rectangle = newTree.clip.getBounds(StageHelper.stage);
-				
+				_treeLayer.addChild(newTree.clip);
+				newTree.clip.y = _stage.stageHeight - newTree.clip.height
 				var left:Boolean = Math.random() < 0.5;
-				if (left) {
+				if (left || newTree.isBoss) {
 					newTree.facingRight = false;
-					newTree.clip.x = _gameWidth + bounds.left;
-					
-					eaze(newTree.clip).to(_treeSpeed, {x: -bounds.right}).onComplete(onTreeDead, newTree);
+					newTree.clip.x = _stage.stageWidth;
+					//
+					eaze(newTree.clip).easing(Linear.easeNone).to(_treeSpeed, {x: -newTree.clip.width}).onComplete(onTreeDead, newTree);
 					_trees.push(newTree);
 				} else {
 					newTree.facingRight = true;
-					newTree.clip.scaleX *= -1;
-					newTree.clip.x = -bounds.right;
+					GraphicsUtil.reverseHorizontal(newTree.clip);
+					newTree.clip.x -= 2 * newTree.clip.width;
 					
-					eaze(newTree.clip).to(_treeSpeed, {x: _gameWidth + bounds.left}).onComplete(onTreeDead, tree);
+					eaze(newTree.clip).easing(Linear.easeNone).to(_treeSpeed, {x: _stage.stageWidth}).onComplete(onTreeDead, newTree);
 					_trees.push(newTree);
 				}
 			}
+			//
+			
+			var adamBounds:Rectangle = _adam.getBounds(_gameScene);
+			var adamHitBounds:Rectangle = ADAM_HITBOX.clone();
+			var sawHitBounds:Rectangle = SAW_HITBOX.clone();
+			if (_adam.scaleX < 0) {
+				adamHitBounds.offset(ADAM_HITBOX.width - ADAM_HITBOX.x / 2, 0);
+				sawHitBounds.offset(-ADAM_HITBOX.width - SAW_HITBOX.x / 2 + 5, 0);
+			}
+			adamHitBounds.offset(adamBounds.x, adamBounds.y);
+			sawHitBounds.offset(adamBounds.x, adamBounds.y);
 			
 			for each (var tree:Tree in _trees) {
 				if (tree.dying) {
 					continue;
 				}
-				if (_adam.getChildByName("hit").hitTestObject(tree.clip.getChildByName("hitboxSprite"))) {
+				
+				var treeBounds:Rectangle = tree.clip.getBounds(_gameScene);
+				var treeHitBounds:Rectangle = tree.isBoss ? BOSS_HITBOX.clone() : TREE_HITBOX.clone();
+				if (tree.clip.scaleX < 0) {
+					treeHitBounds.offset(tree.isBoss ? BOSS_HITBOX.width - BOSS_HITBOX.x : TREE_HITBOX.width - TREE_HITBOX.x, 0);
+				}
+				treeHitBounds.offset(treeBounds.x, treeBounds.y);
+				
+				if (sawHitBounds.intersects(treeHitBounds)) {
 					tree.dying = true;
-					var treeBounds:Rectangle = tree.clip.getBounds(StageHelper.stage);
 					if (tree.isBoss) {
-						eaze(tree.clip).to(4, {y: _gameHeight + treeBounds.top}).onComplete(onTreeDead, tree);
+						eaze(tree.clip).to(4, {y: _stage.stageHeight}).onComplete(onTreeDead, tree);
 					} else {
 						if (tree.facingRight) {
-							eaze(tree.clip).to(4, {y: _gameHeight + treeBounds.top, rotation: -100}).onComplete(onTreeDead, tree);
+							eaze(tree.clip).to(2.5, {y: _stage.stageHeight + tree.clip.height, x: tree.clip.x - tree.clip.height, rotation: -Math.PI / 2}).onComplete(onTreeDead, tree);
 						} else {
-							eaze(tree.clip).to(4, {y: _gameHeight + treeBounds.top, rotation: 100}).onComplete(onTreeDead, tree);
+							eaze(tree.clip).to(2.5, {y: _stage.stageHeight + tree.clip.height, x: tree.clip.x + tree.clip.height, rotation: Math.PI / 2}).onComplete(onTreeDead, tree);
 						}
 					}
-					var y:Number = _gameHeight - 100 * Math.random();
-					var x:Number = _gameWidth / 2 - Math.random() * 100;
-					if (_adam.currentLabel == "right") {
-						x = _gameWidth / 2 + Math.random() * 200;
+					var y:Number = _stage.stageHeight - 20 * Math.random();
+					var x:Number = _stage.stageWidth / 2 - Math.random() * 5;
+					if (_adam.scaleX > 0) {
+						x = _stage.stageWidth / 2 + Math.random() * 10;
 					}
 					var hitScoreText:TextField = createTextField(String(Math.floor(Math.random() * 9002)));
 					hitScoreText.x = x;
 					hitScoreText.y = y;
 					_gameScene.addChild(hitScoreText);
-					eaze(hitScoreText).to(2, {y: -50}).onComplete(onHitScoreFinished, hitScoreText);
+					eaze(hitScoreText).to(2, {y: -hitScoreText.height}).onComplete(onHitScoreFinished, hitScoreText);
 					
 					var randomDarbe:String = _darbeArray[Math.floor(Math.random() * _darbeArray.length)];
 					var localizedDarbe:String = LocaleUtil.localize(randomDarbe) + " " + LocaleUtil.localize("blow") + "!";
 					var darbeText:TextField = createTextField(localizedDarbe);
-					y = _gameHeight - 100 * Math.random();
-					x = _gameWidth / 2 + Math.random() * 100;
-					if (_adam.currentLabel == "right") {
-						x = _gameWidth / 2 - Math.random() * 200;
+					y = _stage.stageHeight - 20 * Math.random();
+					x = _stage.stageWidth / 2 + Math.random() * 5;
+					if (_adam.scaleX > 0) {
+						x = _stage.stageWidth / 2 - Math.random() * 10;
 					}
 					darbeText.x = x;
 					darbeText.y = y;
 					_gameScene.addChild(darbeText);
-					eaze(darbeText).to(2.5, {y: -50}).onComplete(onHitScoreFinished, darbeText);
+					eaze(darbeText).to(2.5, {y: -darbeText.height}).onComplete(onHitScoreFinished, darbeText);
 					SoundManager.instance.playTestereHitSound();
 				}
-				if (_adam.getChildByName("hitBack").hitTestObject(tree.clip.getChildByName("hitboxSprite"))) {
-					if (_adam.currentLabel == "left") {
-						_adam.gotoAndPlay("patlamasol");
-					} else {
-						_adam.gotoAndPlay("patlamasag");
+				
+				if (adamHitBounds.intersects(treeHitBounds)) {
+					_gameScene.removeChild(_adam);
+					_gameScene.addChild(_adamPatlama);
+					_adamPatlama.y = 80;
+					_adamPatlama.play();
+					
+					if (_adam.scaleX < 0) {
+						GraphicsUtil.reverseHorizontal(_adamPatlama);
 					}
+					
 					_dead = true;
 					SoundManager.instance.stopAgacWalkSound();
 					SoundManager.instance.stopBossSound();
@@ -271,108 +315,83 @@ package {
 		}
 		
 		private function onFinished(e:Event):void {
-			var deathPopup:MovieClip = _gameScene.getChildByName("deathPopup") as MovieClip;
-			deathPopup.visible = true;
-			(deathPopup.getChildByName("deathText") as TextField).text = LocaleUtil.localize("deathText");
-			(deathPopup.getChildByName("scoreText") as TextField).text = LocaleUtil.localize("score") + ": " + _score;
-			(deathPopup.getChildByName("menuButton")).addEventListener(MouseEvent.CLICK, onMenuPressed);
-			(deathPopup.getChildByName("menuButton")).addEventListener(TouchEvent.TOUCH_TAP, onMenuPressed);
-		}
-		
-		private function onMenuPressed(e:Event):void {
-			destroy();
-			new MainMenuManager(Main.onStartGame);
+			var deathPopup:Sprite = new Sprite();
+			
+			var deathBg:Quad = new Quad(200, 200, 0x000000);
+			deathPopup.addChild(deathBg);
+			var deathText:TextField = createTextField(LocaleUtil.localize("deathText"));
+			deathText.y = 10;
+			deathText.x = 10;
+			deathText.hAlign = HAlign.LEFT;
+			deathPopup.addChild(deathText);
+			
+			var scoreText:TextField = createTextField(LocaleUtil.localize(LocaleUtil.localize("score") + ": " + _score));
+			scoreText.y = 10 + deathText.height;
+			scoreText.x = 10;
+			scoreText.hAlign = HAlign.LEFT;
+			deathPopup.addChild(scoreText);
+			
+			
+			deathPopup.x = 300;
+			deathPopup.y = 100;
+			_stage.addChild(deathPopup);
+			
+			var menuButton:Button = new Button(Assets.assetManager.getTexture("skipUp"), "", Assets.assetManager.getTexture("skipDown"));
+			menuButton.addEventListener(TouchEvent.TOUCH, function (e:TouchEvent):void {
+				var touch:Touch = e.getTouch(menuButton, TouchPhase.ENDED);
+				if (touch) {
+					menuButton.removeEventListeners(TouchEvent.TOUCH);
+					destroy();
+				}
+			});
+			menuButton.y = 190 - menuButton.height;
+			menuButton.x = 100 - menuButton.width / 2;
+			deathPopup.addChild(menuButton);
 		}
 		
 		private function onHitScoreFinished(hitScoreText:TextField):void {
 			_gameScene.removeChild(hitScoreText);
 		}
 		
+		//
 		private function onTreeDead(tree:Tree):void {
 			if (tree == _boss) {
 				_boss = null;
-				_gameScene.gotoAndPlay("normal");
+				_backgroundSprite.removeChildren();
+				_backgroundSprite.addChild(Assets.getMovieClip("arkaplan"));
 				SoundManager.instance.stopBossSound();
 			}
 			_trees.splice(_trees.indexOf(tree), 1);
 			tree.destroy();
 		}
 		
-		private function onClick(e:Event):void {
+		private function onClick(e:TouchEvent):void {
 			if (_dead) {
 				return;
 			}
-			var stageX:Number;
-			if (e is MouseEvent) {
-				var mouseEvent:MouseEvent = e as MouseEvent;
-				stageX = mouseEvent.stageX;
+			
+			var touch:Touch = e.getTouch(_gameScene, TouchPhase.BEGAN);
+			
+			if (!touch) {
+				return;
 			}
-			if (e is TouchEvent) {
-				var touchEvent:TouchEvent = e as TouchEvent;
-				stageX = touchEvent.stageX;
-			}
-			if (stageX <= _adam.x) {
-				_adam.gotoAndPlay("left");
+			if (touch.globalX >= _stage.stageWidth / 2) {
+				if (_adam.scaleX < 0) {
+					GraphicsUtil.reverseHorizontal(_adam);
+				}
 			} else {
-				_adam.gotoAndPlay("right");
+				if (_adam.scaleX > 0) {
+					GraphicsUtil.reverseHorizontal(_adam);
+				}
 			}
 		}
 		
 		private function createTextField(text:String):TextField {
-			var textField:TextField = new TextField();
-			textField.defaultTextFormat = _textFormat;
-			textField.embedFonts = true;
-			textField.text = text;
-			textField.width = 300;
-			textField.height = 50;
-			textField.selectable = false;
+			var textField:TextField = new TextField(200, 75, text, "visitor", 24, 0xffffff);
 			return textField;
 		}
 		
-		private function onUnmutePressed(e:Event):void {
-			SoundManager.instance.setMuted(false);
-			_unmuteButton.visible = false;
-			_muteButton.visible = true;
-		}
-		
-		private function onMutePressed(e:Event):void {
-			SoundManager.instance.setMuted(true);
-			_unmuteButton.visible = true;
-			_muteButton.visible = false;
-		}
-		
-		private function onPausePressed(e:Event):void {
-			SoundManager.instance.pauseAll();
-			_paused = true;
-			_playButton.visible = true;
-			_pauseButton.visible = false;
-		}
-		
-		private function onPlayPressed(e:Event):void {
-			SoundManager.instance.unpauseAll();
-			_paused = false;
-			_playButton.visible = false;
-			_pauseButton.visible = true;
-		}
-		
 		override protected function destroy(e:Event = null):void {
-			_playButton.removeEventListener(MouseEvent.CLICK, onPlayPressed);
-			_playButton.removeEventListener(TouchEvent.TOUCH_TAP, onPlayPressed);
-			
-			_pauseButton.removeEventListener(MouseEvent.CLICK, onPausePressed);
-			_pauseButton.removeEventListener(TouchEvent.TOUCH_TAP, onPausePressed);
-			
-			_muteButton.removeEventListener(MouseEvent.CLICK, onMutePressed);
-			_muteButton.removeEventListener(TouchEvent.TOUCH_TAP, onMutePressed);
-			
-			_unmuteButton.removeEventListener(MouseEvent.CLICK, onUnmutePressed);
-			_unmuteButton.removeEventListener(TouchEvent.TOUCH_TAP, onUnmutePressed);
-			
-			_gameScene.removeEventListener(MouseEvent.CLICK, onClick);
-			_gameScene.removeEventListener(TouchEvent.TOUCH_TAP, onClick);
-			
-			((_gameScene.getChildByName("deathPopup") as MovieClip).getChildByName("menuButton")).removeEventListener(MouseEvent.CLICK, onMenuPressed);
-			((_gameScene.getChildByName("deathPopup") as MovieClip).getChildByName("menuButton")).removeEventListener(TouchEvent.TOUCH_TAP, onMenuPressed);
 			
 			SoundManager.instance.stopTestereCleanSound();
 			for each (var tree:Tree in _trees) {
@@ -386,9 +405,8 @@ package {
 			}
 			
 			if (_gameScene) {
-				_gameScene.removeEventListener(MouseEvent.CLICK, onClick);
-				_gameScene.removeEventListener(TouchEvent.TOUCH_TAP, onClick);
-				StageHelper.remove(_gameScene);
+				_gameScene.removeEventListener(TouchEvent.TOUCH, onClick);
+				_gameScene.removeFromParent(true);
 				_gameScene = null;
 			}
 			
