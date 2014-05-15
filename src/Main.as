@@ -42,8 +42,8 @@ package {
 		}
 		
 		private static function onAssetsReady():void {
-			//startAnimation();
-			new GameManager(initMenu);
+			startAnimation();
+			//new GameManager(initMenu);
 		}
 		
 		public static function startAnimation():void {

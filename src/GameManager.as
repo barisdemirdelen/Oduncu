@@ -16,7 +16,9 @@ package {
 	import so.cuo.platform.admob.AdmobPosition;
 	import sound.SoundManager;
 	import starling.core.Starling;
+	import starling.display.Button;
 	import starling.display.MovieClip;
+	import starling.display.Quad;
 	import starling.display.Sprite;
 	import starling.display.Stage;
 	import starling.events.Touch;
@@ -301,19 +303,40 @@ package {
 		}
 		
 		private function onFinished(e:Event):void {
-			//var deathPopup:MovieClip = _gameScene.getChildByName("deathPopup") as MovieClip;
-			//deathPopup.visible = true;
-			//(deathPopup.getChildByName("deathText") as TextField).text = LocaleUtil.localize("deathText");
-			//(deathPopup.getChildByName("scoreText") as TextField).text = LocaleUtil.localize("score") + ": " + _score;
-			//(deathPopup.getChildByName("menuButton")).addEventListener(MouseEvent.CLICK, onMenuPressed);
-			//(deathPopup.getChildByName("menuButton")).addEventListener(TouchEvent.TOUCH_TAP, onMenuPressed);
+			var deathPopup:Sprite = new Sprite();
+			
+			var deathBg:Quad = new Quad(200, 200, 0x000000);
+			deathPopup.addChild(deathBg);
+			var deathText:TextField = createTextField(LocaleUtil.localize("deathText"));
+			deathText.y = 10;
+			deathText.x = 10;
+			deathText.hAlign = HAlign.LEFT;
+			deathPopup.addChild(deathText);
+			
+			var scoreText:TextField = createTextField(LocaleUtil.localize(LocaleUtil.localize("score") + ": " + _score));
+			scoreText.y = 10 + deathText.height;
+			scoreText.x = 10;
+			scoreText.hAlign = HAlign.LEFT;
+			deathPopup.addChild(scoreText);
+			
+			
+			deathPopup.x = 300;
+			deathPopup.y = 100;
+			_stage.addChild(deathPopup);
+			
+			var menuButton:Button = new Button(Assets.assetManager.getTexture("skipUp"), "", Assets.assetManager.getTexture("skipDown"));
+			menuButton.addEventListener(TouchEvent.TOUCH, function (e:TouchEvent):void {
+				var touch:Touch = e.getTouch(menuButton, TouchPhase.ENDED);
+				if (touch) {
+					menuButton.removeEventListeners(TouchEvent.TOUCH);
+					destroy();
+				}
+			});
+			menuButton.y = 190 - menuButton.height;
+			menuButton.x = 100 - menuButton.width / 2;
+			deathPopup.addChild(menuButton);
 		}
 		
-		//private function onMenuPressed(e:Event):void {
-		//destroy();
-		//new MainMenuManager(Main.onStartGame);
-		//}
-		//
 		private function onHitScoreFinished(hitScoreText:TextField):void {
 			_gameScene.removeChild(hitScoreText);
 		}
@@ -352,7 +375,7 @@ package {
 		}
 		
 		private function createTextField(text:String):TextField {
-			var textField:TextField = new TextField(300, 50, text, "visitor", 24, 0xffffff);
+			var textField:TextField = new TextField(200, 75, text, "visitor", 24, 0xffffff);
 			return textField;
 		}
 		
