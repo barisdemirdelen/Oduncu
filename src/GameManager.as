@@ -1,6 +1,7 @@
 package {
 	import aze.motion.easing.Linear;
 	import aze.motion.eaze;
+	import com.adobe.ane.gameCenter.GameCenterController;
 	import flash.display.SimpleButton;
 	import flash.events.AccelerometerEvent;
 	import flash.events.Event;
@@ -132,7 +133,7 @@ package {
 			admob.addEventListener(AdmobEvent.onBannerFailedReceive, onAdFailed);
 			admob.enableTrace = true;
 			trace(admob.getScreenSize());
-			admob.showBanner(Admob.BANNER, AdmobPosition.TOP_CENTER);
+			admob.showBanner(Admob.BANNER, AdmobPosition.TOP_RIGHT);
 			
 			_trees = new Array();
 			SoundManager.instance.playTestereCleanSound();
@@ -170,8 +171,8 @@ package {
 		private function onTick(e:TimerEvent):void {
 			if (_dead) {
 				for each (var tree2:Tree in _trees) {
-					tree2.clip.scaleX  *= -1;
-					if(tree2.clip.scaleX<0) {
+					tree2.clip.scaleX *= -1;
+					if (tree2.clip.scaleX < 0) {
 						tree2.clip.x += tree2.clip.width
 					} else {
 						tree2.clip.x -= tree2.clip.width
@@ -331,22 +332,23 @@ package {
 			scoreText.hAlign = HAlign.LEFT;
 			deathPopup.addChild(scoreText);
 			
-			
 			deathPopup.x = 300;
 			deathPopup.y = 100;
 			_stage.addChild(deathPopup);
 			
 			var menuButton:Button = new Button(Assets.assetManager.getTexture("skipUp"), "", Assets.assetManager.getTexture("skipDown"));
-			menuButton.addEventListener(TouchEvent.TOUCH, function (e:TouchEvent):void {
-				var touch:Touch = e.getTouch(menuButton, TouchPhase.ENDED);
-				if (touch) {
-					menuButton.removeEventListeners(TouchEvent.TOUCH);
-					destroy();
-				}
-			});
+			menuButton.addEventListener(TouchEvent.TOUCH, function(e:TouchEvent):void {
+					var touch:Touch = e.getTouch(menuButton, TouchPhase.ENDED);
+					if (touch) {
+						menuButton.removeEventListeners(TouchEvent.TOUCH);
+						destroy();
+					}
+				});
 			menuButton.y = 190 - menuButton.height;
 			menuButton.x = 100 - menuButton.width / 2;
 			deathPopup.addChild(menuButton);
+			
+			GameCenterManager.instance.submitScore(_score);
 		}
 		
 		private function onHitScoreFinished(hitScoreText:TextField):void {

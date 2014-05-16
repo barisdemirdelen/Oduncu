@@ -56,10 +56,10 @@
   <!-- SWC Libraries -->
   <libraryPaths>
     <element path="lib\oduncu.swc" />
-    <element path="lib\so.cuo.platform.admob.ane" />
   </libraryPaths>
   <!-- External Libraries -->
   <externalLibraryPaths>
+    <element path="ane\gamecenter.ane" />
     <element path="ane\admob_all_in_one.ane.ane" />
   </externalLibraryPaths>
   <!-- Runtime Shared Libraries -->

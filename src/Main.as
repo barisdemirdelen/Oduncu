@@ -5,7 +5,6 @@ package {
 	import flash.display.StageScaleMode;
 	import flash.events.Event;
 	import flash.events.TimerEvent;
-	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.ui.Multitouch;
 	import flash.ui.MultitouchInputMode;
@@ -35,6 +34,8 @@ package {
 			starling.stage.stageHeight = 400;
 			starling.antiAliasing = 1;
 			starling.start();
+			
+			GameCenterManager.instance.initialize();
 		}
 		
 		public static function onStarlingReady():void {
