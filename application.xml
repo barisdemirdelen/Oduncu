@@ -78,6 +78,5 @@
   <extensions>
     <extensionID>so.cuo.platform.admob</extensionID>
     <extensionID>com.adobe.ane.gameCenter</extensionID>
-	<!--<extensionID>com.freshplanet.AirGooglePlayGamesService</extensionID>-->
   </extensions>
 </application>

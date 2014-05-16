@@ -53,6 +53,7 @@ package {
 		
 		private var _scoreField:TextField;
 		private var _score:Number;
+		private var _lastScore:Number;
 		
 		private var _textFormat:TextFormat;
 		private var _startTime:int;
@@ -93,6 +94,7 @@ package {
 			_stage = Starling.current.stage;
 			_treeSpeed = 30;
 			_score = 0;
+			_lastScore = 0;
 			_dead = false;
 			_boss = null;
 			_bossCreationRatio = 0.05;
@@ -188,8 +190,12 @@ package {
 			if (_trees.length == 0) {
 				SoundManager.instance.stopAgacWalkSound();
 			}
-			_score = int(getTimer() - _startTime)
+			_lastScore = _score;
+			_score = int(getTimer() - _startTime);
 			_scoreField.text = LocaleUtil.localize("score") + ": " + _score;
+			
+			checkAchievements();
+			
 			_treeSpeed *= 1499 / 1500;
 			_treeCreationRatio *= 1500 / 1499;
 			//
@@ -312,6 +318,20 @@ package {
 					eaze(tree.clip).killTweens();
 				}
 				return;
+			}
+		}
+		
+		private function checkAchievements():void {
+			checkScoreAchievementFor(10000);
+			checkScoreAchievementFor(100000);
+			checkScoreAchievementFor(250000);
+			checkScoreAchievementFor(500000);
+			checkScoreAchievementFor(1000000);
+		}
+		
+		private function checkScoreAchievementFor(desiredScore:Number):void {
+			if (_lastScore < desiredScore && _score >= desiredScore) {
+				GameCenterManager.instance.submitAchievement(desiredScore);
 			}
 		}
 		
