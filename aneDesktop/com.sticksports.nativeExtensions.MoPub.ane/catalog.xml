@@ -1,0 +1,75 @@
+<?xml version="1.0" ?>
+<swc xmlns="http://www.adobe.com/flash/swccatalog/9">
+    <versions>
+        <swc version="1.2"/>
+        <compiler name="ActionScript Compiler" version="2.0.0" build="354130"/>
+    </versions>
+    <features>
+        <feature-script-deps/>
+    </features>
+    <libraries>
+        <library path="library.swf">
+            <script name="com/sticksports/nativeExtensions/mopub/InternalMessages" mod="1352986766000">
+                <def id="com.sticksports.nativeExtensions.mopub:InternalMessages"/>
+                <dep id="Object" type="i"/>
+                <dep id="String" type="s"/>
+            </script>
+            <script name="com/sticksports/nativeExtensions/mopub/MoPub" mod="1378830284000">
+                <def id="com.sticksports.nativeExtensions.mopub:MoPub"/>
+                <dep id="Number" type="s"/>
+                <dep id="Object" type="i"/>
+                <dep id="flash.external:ExtensionContext" type="s"/>
+            </script>
+            <script name="com/sticksports/nativeExtensions/mopub/MoPubBanner" mod="1368019070000">
+                <def id="com.sticksports.nativeExtensions.mopub:MoPubBanner"/>
+                <dep id="Boolean" type="s"/>
+                <dep id="Function" type="s"/>
+                <dep id="String" type="s"/>
+                <dep id="com.sticksports.nativeExtensions.mopub:InternalMessages" type="e"/>
+                <dep id="com.sticksports.nativeExtensions.mopub:MoPubEvent" type="e"/>
+                <dep id="com.sticksports.nativeExtensions.mopub:MoPubNativeAdOrientation" type="e"/>
+                <dep id="com.sticksports.nativeExtensions.mopub:MoPubSize" type="s"/>
+                <dep id="flash.desktop:NativeApplication" type="e"/>
+                <dep id="flash.events:Event" type="e"/>
+                <dep id="flash.events:EventDispatcher" type="i"/>
+                <dep id="flash.events:StatusEvent" type="s"/>
+                <dep id="flash.external:ExtensionContext" type="s"/>
+                <dep id="int" type="e"/>
+                <dep id="trace" type="e"/>
+            </script>
+            <script name="com/sticksports/nativeExtensions/mopub/MoPubEvent" mod="1352989718000">
+                <def id="com.sticksports.nativeExtensions.mopub:MoPubEvent"/>
+                <dep id="Boolean" type="s"/>
+                <dep id="String" type="s"/>
+                <dep id="flash.events:Event" type="i"/>
+            </script>
+            <script name="com/sticksports/nativeExtensions/mopub/MoPubInterstitial" mod="1366294976000">
+                <def id="com.sticksports.nativeExtensions.mopub:MoPubInterstitial"/>
+                <dep id="Boolean" type="s"/>
+                <dep id="Function" type="s"/>
+                <dep id="String" type="s"/>
+                <dep id="com.sticksports.nativeExtensions.mopub:InternalMessages" type="e"/>
+                <dep id="com.sticksports.nativeExtensions.mopub:MoPubEvent" type="e"/>
+                <dep id="flash.desktop:NativeApplication" type="e"/>
+                <dep id="flash.events:Event" type="s"/>
+                <dep id="flash.events:EventDispatcher" type="i"/>
+                <dep id="flash.events:StatusEvent" type="s"/>
+                <dep id="flash.external:ExtensionContext" type="s"/>
+                <dep id="trace" type="e"/>
+            </script>
+            <script name="com/sticksports/nativeExtensions/mopub/MoPubNativeAdOrientation" mod="1352205247000">
+                <def id="com.sticksports.nativeExtensions.mopub:MoPubNativeAdOrientation"/>
+                <dep id="Object" type="i"/>
+                <dep id="int" type="s"/>
+            </script>
+            <script name="com/sticksports/nativeExtensions/mopub/MoPubSize" mod="1366819873000">
+                <def id="com.sticksports.nativeExtensions.mopub:MoPubSize"/>
+                <dep id="Object" type="i"/>
+                <dep id="int" type="s"/>
+            </script>
+            <digests>
+                <digest type="SHA-256" signed="false" value="580f2920ea7962fdfeb309cee91471a6303684402281fd3581d777dd38f44b24"/>
+            </digests>
+        </library>
+    </libraries>
+</swc>

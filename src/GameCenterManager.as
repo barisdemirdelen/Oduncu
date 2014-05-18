@@ -4,6 +4,8 @@ package {
 	import com.adobe.ane.gameCenter.GameCenterAuthenticationEvent;
 	import com.adobe.ane.gameCenter.GameCenterController;
 	import com.adobe.ane.gameCenter.GameCenterLeaderboardEvent;
+	import com.freshplanet.ane.AirGooglePlayGames.AirGooglePlayGames;
+	import com.freshplanet.ane.AirGooglePlayGames.AirGooglePlayGamesEvent;
 	
 	/**
 	 * ...
@@ -32,21 +34,21 @@ package {
 				
 				_controller.authenticate();
 			}
-			//if (AirGooglePlayGames.isSupported) {
-			//trace("google play supported");
+			if (AirGooglePlayGames.isSupported) {
 			//AirGooglePlayGames.getInstance().addEventListener(AirGooglePlayGamesEvent.ON_SIGN_IN_SUCCESS, onGoogleSignInSuccess);
 			//AirGooglePlayGames.getInstance().addEventListener(AirGooglePlayGamesEvent.ON_SIGN_IN_FAIL, onGoogleSignInFail);
-			//AirGooglePlayGames.getInstance().startAtLaunch();
-			//}
+			//AirGooglePlayGames.getInstance().signIn()
+			trace("google play supported");
+			}
 		}
 		
-		//private function onGoogleSignInSuccess(e:AirGooglePlayGamesEvent):void {
-		//trace("google play authenticated!");
-		//}
-		//
-		//private function onGoogleSignInFail(e:AirGooglePlayGamesEvent):void {
-		//trace("google play failed authenticating!");
-		//}
+		private function onGoogleSignInSuccess(e:AirGooglePlayGamesEvent):void {
+		trace("google play authenticated!");
+		}
+		
+		private function onGoogleSignInFail(e:AirGooglePlayGamesEvent):void {
+		trace("google play failed authenticating!");
+		}
 		
 		private function onAuthenticated(e:GameCenterAuthenticationEvent):void {
 			trace("gc authenticated!");
@@ -83,10 +85,10 @@ package {
 				trace("submitting gc score");
 				_controller.submitScore(score, "highScore");
 			}
-			//if (AirGooglePlayGames.isSupported) {
-			//trace("senging google play score: " + score);
-			//AirGooglePlayGames.getInstance().reportScore("CgkImtX1jeAFEAIQAQ", score);
-			//}
+			if (AirGooglePlayGames.isSupported) {
+				trace("submitting google play score: " + score);
+				AirGooglePlayGames.getInstance().reportScore("CgkImtX1jeAFEAIQAQ", score);
+			}
 		}
 		
 		public function submitAchievement(score:int):void {

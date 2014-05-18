@@ -1,7 +1,8 @@
 package {
 	import aze.motion.easing.Linear;
 	import aze.motion.eaze;
-	import com.adobe.ane.gameCenter.GameCenterController;
+	import com.sticksports.nativeExtensions.mopub.MoPubBanner;
+	import com.sticksports.nativeExtensions.mopub.MoPubSize;
 	import flash.display.SimpleButton;
 	import flash.events.AccelerometerEvent;
 	import flash.events.Event;
@@ -12,9 +13,6 @@ package {
 	import flash.text.TextFormat;
 	import flash.utils.getTimer;
 	import flash.utils.Timer;
-	import so.cuo.platform.admob.Admob;
-	import so.cuo.platform.admob.AdmobEvent;
-	import so.cuo.platform.admob.AdmobPosition;
 	import sound.SoundManager;
 	import starling.core.Starling;
 	import starling.display.Button;
@@ -83,6 +81,8 @@ package {
 		
 		private const _darbeArray:Array = ["normal", "average", "underwhelming", "overwhelming", "incredible", "amazing", "mindblowing", "proper", "adequate", "solid", "veryGood", "good", "magnificent", "ordinary", "extraordinary", "unbelievable", "insane", "crazy", "weak", "impossible", "critical", "tremendous", "golden", "classy", "sneaky", "deadly", "bruiser"];
 		
+		private var _banner:MoPubBanner;
+		
 		public function GameManager(callback:Function) {
 			super(callback);
 		}
@@ -123,19 +123,37 @@ package {
 			_gameScene.addChild(_adam);
 			_gameScene.addChild(Assets.getMovieClip("cimenler"));
 			
-			var admob:Admob = Admob.getInstance(); //create a instance
-			trace(admob.supportDevice);
-			if (Capabilities.manufacturer.toLowerCase().indexOf("ios") != -1) { //ios
-				//ios
-				admob.setKeys("ca-app-pub-7819139870608872/4507989657")
-			} else {
-				admob.setKeys("ca-app-pub-7819139870608872/9077790053")
+			//var admob:Admob = Admob.getInstance(); //create a instance
+			//trace(admob.supportDevice);
+			//if (Capabilities.manufacturer.toLowerCase().indexOf("ios") != -1) { //ios
+			////ios
+			//admob.setKeys("ca-app-pub-7819139870608872/4507989657")
+			//} else {
+			//admob.setKeys("ca-app-pub-7819139870608872/9077790053")
+			//}
+			//admob.addEventListener(AdmobEvent.onBannerReceive, onAdReceived);
+			//admob.addEventListener(AdmobEvent.onBannerFailedReceive, onAdFailed);
+			//admob.enableTrace = true;
+			//trace(admob.getScreenSize());
+			//admob.showBanner(Admob.BANNER, AdmobPosition.TOP_RIGHT);
+			
+			if(!_banner) {
+				if (Capabilities.manufacturer.toLowerCase().indexOf("ios") != -1) {
+					//ios
+					_banner = new MoPubBanner("3267561bf1e24a9ba7faf0272a1f6e32", MoPubSize.banner);
+				} else {
+					_banner = new MoPubBanner("84c56954f79242e9aa1cf146a5a1a5b5", MoPubSize.banner);
+				}
+				
+				if(_banner) {
+					_banner.y = 0;
+					_banner.x = Starling.current.nativeStage.width - 320;
+					_banner.width = 320;
+					_banner.height = 50;
+					_banner.load();
+					_banner.show();
+				}
 			}
-			admob.addEventListener(AdmobEvent.onBannerReceive, onAdReceived);
-			admob.addEventListener(AdmobEvent.onBannerFailedReceive, onAdFailed);
-			admob.enableTrace = true;
-			trace(admob.getScreenSize());
-			admob.showBanner(Admob.BANNER, AdmobPosition.TOP_RIGHT);
 			
 			_trees = new Array();
 			SoundManager.instance.playTestereCleanSound();
@@ -157,14 +175,14 @@ package {
 			_gameTimer.start();
 		}
 		
-		private function onAdFailed(e:AdmobEvent):void {
-			trace(e.data);
-		}
-		
-		private function onAdReceived(e:AdmobEvent):void {
-			trace(e.data.width, e.data.height);
-		}
-		
+		//private function onAdFailed(e:AdmobEvent):void {
+		//trace(e.data);
+		//}
+		//
+		//private function onAdReceived(e:AdmobEvent):void {
+		//trace(e.data.width, e.data.height);
+		//}
+		//
 		private function onAccelerometerUpdate(e:AccelerometerEvent):void {
 			trace(e.accelerationX);
 			_adamSpeed -= e.accelerationX;
@@ -431,6 +449,11 @@ package {
 				_gameScene.removeFromParent(true);
 				_gameScene = null;
 			}
+			
+			if (_banner) {
+				_banner.remove();
+			}
+
 			
 			super.destroy(e);
 		}

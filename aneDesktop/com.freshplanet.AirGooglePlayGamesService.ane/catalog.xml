@@ -1,0 +1,37 @@
+<?xml version="1.0" ?>
+<swc xmlns="http://www.adobe.com/flash/swccatalog/9">
+    <versions>
+        <swc version="1.2"/>
+        <compiler name="ActionScript Compiler" version="2.0.0" build="353981"/>
+    </versions>
+    <features>
+        <feature-script-deps/>
+    </features>
+    <libraries>
+        <library path="library.swf">
+            <script name="com/freshplanet/ane/AirGooglePlayGames/AirGooglePlayGames" mod="1384499795000">
+                <def id="com.freshplanet.ane.AirGooglePlayGames:AirGooglePlayGames"/>
+                <dep id="Boolean" type="s"/>
+                <dep id="Error" type="e"/>
+                <dep id="Function" type="s"/>
+                <dep id="Number" type="s"/>
+                <dep id="String" type="s"/>
+                <dep id="com.freshplanet.ane.AirGooglePlayGames:AirGooglePlayGamesEvent" type="e"/>
+                <dep id="flash.events:EventDispatcher" type="i"/>
+                <dep id="flash.events:StatusEvent" type="s"/>
+                <dep id="flash.external:ExtensionContext" type="s"/>
+                <dep id="flash.system:Capabilities" type="e"/>
+                <dep id="trace" type="e"/>
+            </script>
+            <script name="com/freshplanet/ane/AirGooglePlayGames/AirGooglePlayGamesEvent" mod="1384384142000">
+                <def id="com.freshplanet.ane.AirGooglePlayGames:AirGooglePlayGamesEvent"/>
+                <dep id="Boolean" type="s"/>
+                <dep id="String" type="s"/>
+                <dep id="flash.events:Event" type="i"/>
+            </script>
+            <digests>
+                <digest type="SHA-256" signed="false" value="42054b99c244997efe457b1f9bb84ba0cab0ca1fba24dc4c15c57071f07c5881"/>
+            </digests>
+        </library>
+    </libraries>
+</swc>
