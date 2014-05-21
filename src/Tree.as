@@ -52,7 +52,7 @@ package {
 		
 		public function destroy():void {
 			if (_clip) {
-				_clip.parent.removeChild(_clip);
+				_clip.removeFromParent(true);
 				_clip = null;
 			}
 		}

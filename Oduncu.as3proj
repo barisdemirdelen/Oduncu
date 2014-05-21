@@ -23,7 +23,8 @@
   <!-- Build options -->
   <build>
     <option accessible="False" />
-    <option advancedTelemetry="False" />
+    <option advancedTelemetry="True" />
+    <option advancedTelemetryPassword="12345" />
     <option allowSourcePathOverlap="False" />
     <option benchmark="False" />
     <option es="False" />
@@ -56,18 +57,11 @@
   <!-- SWC Libraries -->
   <libraryPaths>
     <element path="lib\oduncu.swc" />
-    <element path="lib\MoPub.swc" />
-    <element path="lib\PlayHavenAPI.swc" />
   </libraryPaths>
   <!-- External Libraries -->
   <externalLibraryPaths>
     <element path="ane\gamecenter.ane" />
     <element path="ane\admob_all_in_one.ane.ane" />
-    <element path="ane\AirGooglePlayGamesService_v12.ane" />
-    <element path="ane\AirGooglePlayGamesService_froyo.ane" />
-    <element path="ane\com.playhaven.extensions.Playhaven.ane" />
-    <element path="ane\PlayHaven.ane" />
-    <element path="ane\MoPub.ane" />
   </externalLibraryPaths>
   <!-- Runtime Shared Libraries -->
   <rslPaths>

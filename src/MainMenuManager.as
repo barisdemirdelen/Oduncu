@@ -1,10 +1,12 @@
 package {
+	import flash.display.DisplayObjectContainer;
 	import flash.display.MovieClip;
 	import flash.display.SimpleButton;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
 	import flash.events.TouchEvent;
+	import flash.text.TextField;
 	import flash.utils.Timer;
 	import sound.SoundManager;
 	
@@ -15,7 +17,8 @@ package {
 	public class MainMenuManager extends BurgerManager {
 		
 		private var _mainMenu:MovieClip;
-		private var _startButton:SimpleButton
+		private var _startButton:SimpleButton;
+		private var _highScoreButton:SimpleButton;
 		private var _oynakTimer:Timer;
 		
 		public function MainMenuManager(callBack:Function) {
@@ -31,6 +34,23 @@ package {
 			_startButton = _mainMenu.getChildByName("startButton") as SimpleButton;
 			_startButton.addEventListener(TouchEvent.TOUCH_TAP, onStartClick);
 			_startButton.addEventListener(MouseEvent.CLICK, onStartClick);
+			
+			_highScoreButton = _mainMenu.getChildByName("highScores") as SimpleButton;
+			_highScoreButton.addEventListener(TouchEvent.TOUCH_TAP, onHighScoresClick);
+			_highScoreButton.addEventListener(MouseEvent.CLICK, onHighScoresClick);
+			
+			(_highScoreButton.upState as TextField).text = LocaleUtil.localize("highScores");
+			(_highScoreButton.overState as TextField).text = LocaleUtil.localize("highScores");
+			(_highScoreButton.downState as TextField).text = LocaleUtil.localize("highScores");
+			(_highScoreButton.hitTestState as TextField).text = LocaleUtil.localize("highScores");
+			
+			if (!GameCenterManager.isSupported) {
+				_highScoreButton.visible = false;
+			}
+		}
+		
+		private function onHighScoresClick(e:Event):void {
+			GameCenterManager.instance.showLeaderboardView();
 		}
 		
 		private function onStartClick(e:Event):void {
