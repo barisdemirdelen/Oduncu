@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <application xmlns="http://ns.adobe.com/air/application/4.0">
 	<id>bar.Oduncu</id>
-	<versionNumber>1.0.6</versionNumber>
+	<versionNumber>1.0.7</versionNumber>
 	<supportedProfiles>mobileDevice</supportedProfiles>
 	<filename>Oduncu</filename>
 	<name>Oduncu</name>
@@ -16,8 +16,7 @@
 	<application>
 		<meta-data android:name="com.google.android.gms.games.APP_ID" android:value="\ 197597686426" />
 		<activity android:name="com.freshplanet.googleplaygames.SignInActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
-		<meta-data android:name="com.google.android.gms.version" android:value="4323000" />
-        <activity android:name="com.google.android.gms.ads.AdActivity" android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"/>
+        <activity android:name="com.google.ads.AdActivity" android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"/>
 	</application>
 </manifest>]]>
 		</manifestAdditions>
@@ -82,5 +81,6 @@
 	<extensions>
 		<extensionID>so.cuo.platform.admob</extensionID>
 		<extensionID>com.adobe.ane.gameCenter</extensionID>
+		<extensionID>com.milkmangames.extensions.GoogleGames</extensionID>
 	</extensions>
 </application>

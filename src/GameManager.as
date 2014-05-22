@@ -85,6 +85,8 @@ package {
 		
 		//private var _banner:MoPubBanner;
 		
+		private static var _instance:GameManager;
+		
 		public function GameManager(callback:Function) {
 			super(callback);
 		}
@@ -92,6 +94,11 @@ package {
 		override protected function init():void {
 			super.init();
 			
+			if (_instance) {
+				_instance.destroy();
+			}
+			
+			_instance = this;
 			FlashStageHelper.stage.frameRate = 60;
 			_stage = Starling.current.stage;
 			_treeSpeed = 30;
@@ -139,7 +146,6 @@ package {
 			admob.addEventListener(AdmobEvent.onBannerReceive, onAdReceived);
 			admob.addEventListener(AdmobEvent.onBannerFailedReceive, onAdFailed);
 			admob.enableTrace = Capabilities.isDebugger;
-			trace(admob.getScreenSize());
 			admob.showBanner(Admob.BANNER, AdmobPosition.TOP_RIGHT);
 			
 			//if(!_banner) {
@@ -206,7 +212,6 @@ package {
 				return;
 			}
 			if (_paused) {
-				
 				return;
 			}
 			
@@ -317,24 +322,7 @@ package {
 				}
 				
 				if (adamHitBounds.intersects(treeHitBounds)) {
-					_gameScene.removeChild(_adam);
-					_gameScene.addChild(_adamPatlama);
-					_adamPatlama.y = 80;
-					_adamPatlama.play();
-					
-					if (_adam.scaleX < 0) {
-						GraphicsUtil.reverseHorizontal(_adamPatlama);
-					}
-					
-					_dead = true;
-					SoundManager.instance.stopAgacWalkSound();
-					SoundManager.instance.stopBossSound();
-					//_gameTimer.removeEventListener(TimerEvent.TIMER, onTick);
-					//_gameTimer.stop();
-					//_gameTimer = null;
-					_finishTimer = new Timer(3000, 1);
-					_finishTimer.addEventListener(TimerEvent.TIMER, onFinished);
-					_finishTimer.start();
+					killAdam();
 					break;
 				}
 			}
@@ -343,6 +331,28 @@ package {
 					eaze(tree.clip).killTweens();
 				}
 				return;
+			}
+		}
+		
+		public function killAdam():void {
+			_gameScene.removeChild(_adam);
+			_gameScene.addChild(_adamPatlama);
+			_adamPatlama.y = 80;
+			_adamPatlama.play();
+			
+			if (_adam.scaleX < 0) {
+				GraphicsUtil.reverseHorizontal(_adamPatlama);
+			}
+			
+			_dead = true;
+			SoundManager.instance.stopAgacWalkSound();
+			SoundManager.instance.stopBossSound();
+			_finishTimer = new Timer(3000, 1);
+			_finishTimer.addEventListener(TimerEvent.TIMER, onFinished);
+			_finishTimer.start();
+			
+			for each (var tree:Tree in _trees) {
+				eaze(tree.clip).killTweens();
 			}
 		}
 		
@@ -360,7 +370,7 @@ package {
 			}
 		}
 		
-		private function onFinished(e:Event):void {
+		public function onFinished(e:Event = null):void {
 			var deathPopup:Sprite = new Sprite();
 			
 			var deathBg:Quad = new Quad(200, 200, 0x000000);
@@ -457,12 +467,13 @@ package {
 				_gameScene = null;
 			}
 			
-			//if (_banner) {
-			//_banner.remove();
-			//}
-//
+			_instance = null;
 			
 			super.destroy(e);
+		}
+		
+		public static function get instance():GameManager {
+			return _instance;
 		}
 	
 	}

@@ -40,7 +40,7 @@ set DIST_PATH=dist
 set DIST_NAME=Oduncu
 
 :: Debugging using a custom IP
-set DEBUG_IP=192.168.1.20
+set DEBUG_IP=192.168.1.71
 
 
 

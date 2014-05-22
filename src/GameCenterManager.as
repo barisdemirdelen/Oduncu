@@ -1,9 +1,12 @@
 package {
-	import com.adobe.ane.gameCenter.GameCenterAchievement;
 	import com.adobe.ane.gameCenter.GameCenterAchievementEvent;
 	import com.adobe.ane.gameCenter.GameCenterAuthenticationEvent;
 	import com.adobe.ane.gameCenter.GameCenterController;
 	import com.adobe.ane.gameCenter.GameCenterLeaderboardEvent;
+	import com.milkmangames.nativeextensions.events.GoogleGamesEvent;
+	import com.milkmangames.nativeextensions.GoogleGames;
+	import flash.events.Event;
+	import flash.utils.Dictionary;
 	
 	/**
 	 * ...
@@ -12,15 +15,22 @@ package {
 		
 		private static var _instance:GameCenterManager;
 		private var _controller:GameCenterController;
+		private var _googleAchievementDic:Dictionary;
 		
 		public function GameCenterManager() {
 			if (_instance) {
 				return;
 			}
+			_googleAchievementDic = new Dictionary();
+			_googleAchievementDic["reach10000"] = "CgkImtX1jeAFEAIQAg";
+			_googleAchievementDic["reach100000"] = "CgkImtX1jeAFEAIQAw";
+			_googleAchievementDic["reach250000"] = "CgkImtX1jeAFEAIQBA";
+			_googleAchievementDic["reach500000"] = "CgkImtX1jeAFEAIQBQ";
+			_googleAchievementDic["reach1000000"] = "CgkImtX1jeAFEAIQBg";
 		}
 		
 		public static function get isSupported():Boolean {
-			return GameCenterController.isSupported;
+			return GameCenterController.isSupported || GoogleGames.isSupported();
 		}
 		
 		public function initialize():void {
@@ -36,39 +46,51 @@ package {
 				
 				_controller.authenticate();
 			}
-			//if (AirGooglePlayGames.isSupported) {
-			//AirGooglePlayGames.getInstance().addEventListener(AirGooglePlayGamesEvent.ON_SIGN_IN_SUCCESS, onGoogleSignInSuccess);
-			//AirGooglePlayGames.getInstance().addEventListener(AirGooglePlayGamesEvent.ON_SIGN_IN_FAIL, onGoogleSignInFail);
-			//AirGooglePlayGames.getInstance().startAtLaunch();
-			//trace("google play supported");
-			//}
+			if (GoogleGames.isSupported()) {
+				trace("google play supported");
+				GoogleGames.create();
+				
+				GoogleGames.games.addEventListener(GoogleGamesEvent.SIGN_IN_SUCCEEDED, onGoogleSignInSuccess);
+				GoogleGames.games.addEventListener(GoogleGamesEvent.SIGN_IN_FAILED, onGoogleSignInFail);
+				GoogleGames.games.addEventListener(GoogleGamesEvent.SIGNED_OUT, onGoogleSignOut);
+				GoogleGames.games.addEventListener(GoogleGamesEvent.UNLOCK_ACHIEVEMENT_SUCCEEDED, onAchievementSubmitted);
+				GoogleGames.games.addEventListener(GoogleGamesEvent.UNLOCK_ACHIEVEMENT_FAILED, onAchievementFailed);
+				GoogleGames.games.addEventListener(GoogleGamesEvent.SUBMIT_SCORE_SUCCEEDED, onScoreSubmitted);
+				GoogleGames.games.addEventListener(GoogleGamesEvent.SUBMIT_SCORE_FAILED, onScoreFailed);
+				
+				GoogleGames.games.signIn();
+			}
 		}
 		
-		//private function onGoogleSignInSuccess(e:AirGooglePlayGamesEvent):void {
-		//trace("google play authenticated!");
-		//}
-		//
-		//private function onGoogleSignInFail(e:AirGooglePlayGamesEvent):void {
-		//trace("google play failed authenticating!");
-		//}
-		//
+		private function onGoogleSignInSuccess(e:GoogleGamesEvent):void {
+			trace("google play authenticated! " + e.toString());
+		}
+		
+		private function onGoogleSignInFail(e:GoogleGamesEvent):void {
+			trace("google play failed authenticating! " + e.toString() + " " + e.failureReason);
+		}
+		
+		private function onGoogleSignOut(e:GoogleGamesEvent):void {
+			trace("google play signed out! " + e.toString());
+		}
+		
 		private function onAuthenticated(e:GameCenterAuthenticationEvent):void {
-			trace("gc authenticated!");
+			trace("gc authenticated! " + e.toString());
 		}
 		
-		private function onScoreSubmitted(e:GameCenterLeaderboardEvent):void {
+		private function onScoreSubmitted(e:Event):void {
 			trace("Success : " + e.toString());
 		}
 		
-		private function onScoreFailed(e:GameCenterLeaderboardEvent):void {
+		private function onScoreFailed(e:Event):void {
 			trace("Fail! : " + e.toString());
 		}
 		
-		private function onAchievementSubmitted(e:GameCenterAchievementEvent):void {
+		private function onAchievementSubmitted(e:Event):void {
 			trace("Success : " + e.toString());
 		}
 		
-		private function onAchievementFailed(e:GameCenterAchievementEvent):void {
+		private function onAchievementFailed(e:Event):void {
 			trace("Fail! : " + e.toString());
 		}
 		
@@ -83,6 +105,9 @@ package {
 			if (GameCenterController.isSupported) {
 				_controller.showLeaderboardView("highScore");
 			}
+			if (GoogleGames.isSupported()) {
+				GoogleGames.games.showLeaderboard("CgkImtX1jeAFEAIQAQ");
+			}
 		}
 		
 		public function submitScore(score:int):void {
@@ -93,24 +118,25 @@ package {
 				trace("submitting gc score");
 				_controller.submitScore(score, "highScore");
 			}
-			//if (AirGooglePlayGames.isSupported) {
-				//trace("submitting google play score: " + score);
-				//AirGooglePlayGames.getInstance().reportScore("CgkImtX1jeAFEAIQAQ", score);
-			//}
+			if (GoogleGames.isSupported()) {
+				trace("submitting google play score: " + score);
+				GoogleGames.games.submitScore("CgkImtX1jeAFEAIQAQ", score);
+			}
 		}
 		
 		public function submitAchievement(score:int):void {
+			var achievementString:String = "reach" + score;
 			if (GameCenterController.isSupported) {
 				if (!_controller.authenticated) {
 					_controller.authenticate();
 				}
-				trace("submitting gc achievement");
-				_controller.submitAchievement("reach" + score, 100);
+				trace("submitting gc achievement: " + achievementString);
+				_controller.submitAchievement(achievementString, 100);
 			}
-			//if (AirGooglePlayGames.isSupported) {
-			//trace("senging google play score: " + score);
-			//AirGooglePlayGames.getInstance().reportScore("CgkImtX1jeAFEAIQAQ", score);
-			//}
+			if (GoogleGames.isSupported()) {
+				trace("senging google achievement: " + achievementString);
+				GoogleGames.games.unlockAchievement(_googleAchievementDic[achievementString]);
+			}
 		}
 	
 	}

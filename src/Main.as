@@ -8,6 +8,7 @@ package {
 	import flash.geom.Rectangle;
 	import flash.ui.Multitouch;
 	import flash.ui.MultitouchInputMode;
+	import sound.SoundManager;
 	import starling.core.Starling;
 	import starling.utils.RectangleUtil;
 	import starling.utils.ScaleMode;
@@ -19,9 +20,12 @@ package {
 	
 	public class Main extends Sprite {
 		
+		private var _starling:Starling;
+		
 		public function Main():void {
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.align = StageAlign.TOP_LEFT;
+			stage.addEventListener(Event.ACTIVATE, activate);
 			stage.addEventListener(Event.DEACTIVATE, deactivate);
 			Multitouch.inputMode = MultitouchInputMode.TOUCH_POINT;
 			FlashStageHelper.stage = stage;
@@ -29,11 +33,11 @@ package {
 			
 			Starling.handleLostContext = true;
 			var viewPort:Rectangle = RectangleUtil.fit(new Rectangle(0, 0, 800, 400), new Rectangle(0, 0, stage.fullScreenWidth, stage.fullScreenHeight), ScaleMode.NO_BORDER);
-			var starling:Starling = new Starling(StarlingMain, stage, viewPort);
-			starling.stage.stageWidth = 800;
-			starling.stage.stageHeight = 400;
-			starling.antiAliasing = 1;
-			starling.start();
+			_starling = new Starling(StarlingMain, stage, viewPort);
+			_starling.stage.stageWidth = 800;
+			_starling.stage.stageHeight = 400;
+			_starling.antiAliasing = 1;
+			_starling.start();
 			
 			GameCenterManager.instance.initialize();
 		}
@@ -59,8 +63,17 @@ package {
 			new GameManager(initMenu);
 		}
 		
+		private function activate(e:Event):void {
+			_starling.start();
+			SoundManager.instance.unpauseAll();
+		}
+		
 		private function deactivate(e:Event):void {
-			NativeApplication.nativeApplication.exit();
+			if (GameManager.instance) {
+				GameManager.instance.killAdam();
+			}
+			SoundManager.instance.pauseAll();
+			_starling.stop(true);
 		}
 	
 	}

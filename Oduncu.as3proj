@@ -57,11 +57,14 @@
   <!-- SWC Libraries -->
   <libraryPaths>
     <element path="lib\oduncu.swc" />
+    <element path="lib\GoogleGamesAPI.swc" />
   </libraryPaths>
   <!-- External Libraries -->
   <externalLibraryPaths>
     <element path="ane\gamecenter.ane" />
     <element path="ane\admob_all_in_one.ane.ane" />
+    <element path="ane\com.milkmangames.extensions.GoogleGames.ane" />
+    <element path="ane\admob_all_in_one6.6.7.ane" />
   </externalLibraryPaths>
   <!-- Runtime Shared Libraries -->
   <rslPaths>

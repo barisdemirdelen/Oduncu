@@ -8,15 +8,15 @@
   <compiler>
     <define append="true">
       <name>CONFIG::debug</name>
-      <value>false</value>
-    </define>
-    <define append="true">
-      <name>CONFIG::release</name>
       <value>true</value>
     </define>
     <define append="true">
+      <name>CONFIG::release</name>
+      <value>false</value>
+    </define>
+    <define append="true">
       <name>CONFIG::timeStamp</name>
-      <value>'21/05/2014'</value>
+      <value>'22/05/2014'</value>
     </define>
     <define append="true">
       <name>CONFIG::air</name>
@@ -30,25 +30,25 @@
       <name>CONFIG::desktop</name>
       <value>false</value>
     </define>
-    <optimize>true</optimize>
-    <omit-trace-statements>true</omit-trace-statements>
-    <verbose-stacktraces>false</verbose-stacktraces>
+    <verbose-stacktraces>true</verbose-stacktraces>
     <source-path append="true">
-      <path-element>D:\Oduncu\src</path-element>
-      <path-element>D:\Oduncu\lib\EazeTween</path-element>
-      <path-element>D:\Oduncu\lib\Starling</path-element>
+      <path-element>C:\Oduncu\src</path-element>
+      <path-element>C:\Oduncu\lib\EazeTween</path-element>
+      <path-element>C:\Oduncu\lib\Starling</path-element>
       <path-element>C:\Program Files (x86)\FlashDevelop\Library\AS3\classes</path-element>
     </source-path>
     <external-library-path append="true">
-      <path-element>D:\Oduncu\ane\gamecenter.ane</path-element>
-      <path-element>D:\Oduncu\ane\admob_all_in_one.ane.ane</path-element>
+      <path-element>C:\Oduncu\ane\gamecenter.ane</path-element>
+      <path-element>C:\Oduncu\ane\com.milkmangames.extensions.GoogleGames.ane</path-element>
+      <path-element>C:\Oduncu\ane\admob_all_in_one6.6.7.ane</path-element>
     </external-library-path>
     <library-path append="true">
-      <path-element>D:\Oduncu\lib\oduncu.swc</path-element>
+      <path-element>C:\Oduncu\lib\oduncu.swc</path-element>
+      <path-element>C:\Oduncu\lib\GoogleGamesAPI.swc</path-element>
     </library-path>
   </compiler>
   <file-specs>
-    <path-element>D:\Oduncu\src\Main.as</path-element>
+    <path-element>C:\Oduncu\src\Main.as</path-element>
   </file-specs>
   <default-background-color>#FFFFFF</default-background-color>
   <default-frame-rate>30</default-frame-rate>
