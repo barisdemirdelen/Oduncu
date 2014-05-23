@@ -81,6 +81,8 @@ package {
 		private const TREE_HITBOX:Rectangle = new Rectangle(65, 28, 42, 276);
 		private const BOSS_HITBOX:Rectangle = new Rectangle(11, 149, 532, 400);
 		
+		private var _killedTreeCount:int;
+		
 		private const _darbeArray:Array = ["normal", "average", "underwhelming", "overwhelming", "incredible", "amazing", "mindblowing", "proper", "adequate", "solid", "veryGood", "good", "magnificent", "ordinary", "extraordinary", "unbelievable", "insane", "crazy", "weak", "impossible", "critical", "tremendous", "golden", "classy", "sneaky", "deadly", "bruiser"];
 		
 		//private var _banner:MoPubBanner;
@@ -109,6 +111,7 @@ package {
 			_bossCreationRatio = 0.05;
 			_treeCreationRatio = 0.025;
 			_adamSpeed = 0;
+			_killedTreeCount = 0;
 			_paused = false;
 			
 			_gameScene = new Sprite();
@@ -354,6 +357,14 @@ package {
 			for each (var tree:Tree in _trees) {
 				eaze(tree.clip).killTweens();
 			}
+			
+			if (_killedTreeCount == 0) {
+				GameCenterManager.instance.unlockAchievement("dieFirst");
+			}
+			
+			GameCenterManager.instance.incrementAchievement("die10");
+			GameCenterManager.instance.incrementAchievement("die100");
+			GameCenterManager.instance.incrementAchievement("die1000");
 		}
 		
 		private function checkAchievements():void {
@@ -366,7 +377,7 @@ package {
 		
 		private function checkScoreAchievementFor(desiredScore:Number):void {
 			if (_lastScore < desiredScore && _score >= desiredScore) {
-				GameCenterManager.instance.submitAchievement(desiredScore);
+				GameCenterManager.instance.unlockAchievement("reach" + desiredScore);
 			}
 		}
 		
@@ -420,6 +431,11 @@ package {
 			}
 			_trees.splice(_trees.indexOf(tree), 1);
 			tree.destroy();
+			_killedTreeCount++;
+			GameCenterManager.instance.incrementAchievement("kill10");
+			GameCenterManager.instance.incrementAchievement("kill100");
+			GameCenterManager.instance.incrementAchievement("kill1000");
+			GameCenterManager.instance.incrementAchievement("kill10000");
 		}
 		
 		private function onClick(e:TouchEvent):void {

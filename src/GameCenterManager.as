@@ -15,18 +15,29 @@ package {
 		
 		private static var _instance:GameCenterManager;
 		private var _controller:GameCenterController;
-		private var _googleAchievementDic:Dictionary;
+		private var _googleIdDic:Dictionary;
 		
 		public function GameCenterManager() {
 			if (_instance) {
 				return;
 			}
-			_googleAchievementDic = new Dictionary();
-			_googleAchievementDic["reach10000"] = "CgkImtX1jeAFEAIQAg";
-			_googleAchievementDic["reach100000"] = "CgkImtX1jeAFEAIQAw";
-			_googleAchievementDic["reach250000"] = "CgkImtX1jeAFEAIQBA";
-			_googleAchievementDic["reach500000"] = "CgkImtX1jeAFEAIQBQ";
-			_googleAchievementDic["reach1000000"] = "CgkImtX1jeAFEAIQBg";
+			_googleIdDic = new Dictionary();
+			_googleIdDic["reach10000"] = "CgkImtX1jeAFEAIQAg";
+			_googleIdDic["reach50000"] = "CgkImtX1jeAFEAIQCQ";
+			_googleIdDic["reach100000"] = "CgkImtX1jeAFEAIQAw";
+			_googleIdDic["reach250000"] = "CgkImtX1jeAFEAIQBA";
+			_googleIdDic["reach500000"] = "CgkImtX1jeAFEAIQBQ";
+			_googleIdDic["reach1000000"] = "CgkImtX1jeAFEAIQBg";
+			_googleIdDic["kill10"] = "CgkImtX1jeAFEAIQCg";
+			_googleIdDic["kill100"] = "CgkImtX1jeAFEAIQCw";
+			_googleIdDic["kill1000"] = "CgkImtX1jeAFEAIQDA";
+			_googleIdDic["kill10000"] = "CgkImtX1jeAFEAIQDQ";
+			_googleIdDic["dieFirst"] = "CgkImtX1jeAFEAIQDg";
+			_googleIdDic["kill10Sec1"] = "CgkImtX1jeAFEAIQDw";
+			_googleIdDic["die10"] = "CgkImtX1jeAFEAIQEA";
+			_googleIdDic["die100"] = "CgkImtX1jeAFEAIQEQ";
+			_googleIdDic["die1000"] = "CgkImtX1jeAFEAIQEg";
+			_googleIdDic["highScore"] = "CgkImtX1jeAFEAIQAQ";
 		}
 		
 		public static function get isSupported():Boolean {
@@ -102,40 +113,55 @@ package {
 		}
 		
 		public function showLeaderboardView():void {
+			var leaderboardName:String = "highScore";
 			if (GameCenterController.isSupported) {
-				_controller.showLeaderboardView("highScore");
+				_controller.showLeaderboardView(leaderboardName);
 			}
 			if (GoogleGames.isSupported()) {
-				GoogleGames.games.showLeaderboard("CgkImtX1jeAFEAIQAQ");
+				GoogleGames.games.showLeaderboard(_googleIdDic[leaderboardName]);
 			}
 		}
 		
 		public function submitScore(score:int):void {
+			var leaderboardName:String = "highScore";
 			if (GameCenterController.isSupported) {
 				if (!_controller.authenticated) {
 					_controller.authenticate();
 				}
 				trace("submitting gc score");
-				_controller.submitScore(score, "highScore");
+				_controller.submitScore(score, leaderboardName);
 			}
 			if (GoogleGames.isSupported()) {
 				trace("submitting google play score: " + score);
-				GoogleGames.games.submitScore("CgkImtX1jeAFEAIQAQ", score);
+				GoogleGames.games.submitScore(_googleIdDic[leaderboardName], score);
 			}
 		}
 		
-		public function submitAchievement(score:int):void {
-			var achievementString:String = "reach" + score;
+		public function unlockAchievement(achievementName:String):void {
 			if (GameCenterController.isSupported) {
 				if (!_controller.authenticated) {
 					_controller.authenticate();
 				}
-				trace("submitting gc achievement: " + achievementString);
-				_controller.submitAchievement(achievementString, 100);
+				trace("submitting gc achievement: " + achievementName);
+				_controller.submitAchievement(achievementName, 100);
 			}
 			if (GoogleGames.isSupported()) {
-				trace("senging google achievement: " + achievementString);
-				GoogleGames.games.unlockAchievement(_googleAchievementDic[achievementString]);
+				trace("senging google achievement: " + achievementName);
+				GoogleGames.games.unlockAchievement(_googleIdDic[achievementName]);
+			}
+		}
+		
+		public function incrementAchievement(achievementName:String, count:int = 1):void {
+			if (GameCenterController.isSupported) {
+				if (!_controller.authenticated) {
+					_controller.authenticate();
+				}
+				trace("submitting gc achievement: " + achievementName);
+				_controller.submitAchievement(achievementName, count);
+			}
+			if (GoogleGames.isSupported()) {
+				trace("senging google achievement: " + achievementName);
+				GoogleGames.games.incrementAchievement(_googleIdDic[achievementName],count);
 			}
 		}
 	
