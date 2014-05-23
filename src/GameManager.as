@@ -85,7 +85,7 @@ package {
 		
 		private const _darbeArray:Array = ["normal", "average", "underwhelming", "overwhelming", "incredible", "amazing", "mindblowing", "proper", "adequate", "solid", "veryGood", "good", "magnificent", "ordinary", "extraordinary", "unbelievable", "insane", "crazy", "weak", "impossible", "critical", "tremendous", "golden", "classy", "sneaky", "deadly", "bruiser"];
 		
-		//private var _banner:MoPubBanner;
+		private var _admob:Admob;
 		
 		private static var _instance:GameManager;
 		
@@ -138,18 +138,18 @@ package {
 			_gameScene.addChild(_adam);
 			_gameScene.addChild(Assets.getMovieClip("cimenler"));
 			
-			var admob:Admob = Admob.getInstance(); //create a instance
-			trace(admob.supportDevice);
+			_admob = Admob.getInstance(); //create a instance
+			trace(_admob.supportDevice);
 			if (Capabilities.manufacturer.toLowerCase().indexOf("ios") != -1) { //ios
 				//ios
-				admob.setKeys("ca-app-pub-7819139870608872/4507989657")
+				_admob.setKeys("ca-app-pub-7819139870608872/4507989657")
 			} else {
-				admob.setKeys("ca-app-pub-7819139870608872/9077790053")
+				_admob.setKeys("ca-app-pub-7819139870608872/9077790053")
 			}
-			admob.addEventListener(AdmobEvent.onBannerReceive, onAdReceived);
-			admob.addEventListener(AdmobEvent.onBannerFailedReceive, onAdFailed);
-			admob.enableTrace = Capabilities.isDebugger;
-			admob.showBanner(Admob.BANNER, AdmobPosition.TOP_RIGHT);
+			_admob.addEventListener(AdmobEvent.onBannerReceive, onAdReceived);
+			_admob.addEventListener(AdmobEvent.onBannerFailedReceive, onAdFailed);
+			_admob.enableTrace = Capabilities.isDebugger;
+			_admob.showBanner(Admob.SMART_BANNER, AdmobPosition.TOP_RIGHT);
 			
 			//if(!_banner) {
 			//if (Capabilities.manufacturer.toLowerCase().indexOf("ios") != -1) {
@@ -174,7 +174,7 @@ package {
 			_gameScene.addEventListener(TouchEvent.TOUCH, onClick);
 			_scoreField = createTextField(LocaleUtil.localize("score") + ": " + _score);
 			_scoreField.x = 150;
-			_scoreField.y = 5;
+			_scoreField.y = 15;
 			_scoreField.hAlign = HAlign.LEFT;
 			_gameScene.addChild(_scoreField);
 			_startTime = getTimer();
@@ -481,6 +481,11 @@ package {
 				_gameScene.removeEventListener(TouchEvent.TOUCH, onClick);
 				_gameScene.removeFromParent(true);
 				_gameScene = null;
+			}
+			
+			if (_admob) {
+				_admob.hideBanner();
+				_admob = null;
 			}
 			
 			_instance = null;
