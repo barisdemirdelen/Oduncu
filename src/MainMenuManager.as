@@ -19,6 +19,7 @@ package {
 		private var _mainMenu:MovieClip;
 		private var _startButton:SimpleButton;
 		private var _highScoreButton:SimpleButton;
+		private var _achievementButton:SimpleButton;
 		private var _oynakTimer:Timer;
 		
 		public function MainMenuManager(callBack:Function) {
@@ -39,18 +40,32 @@ package {
 			_highScoreButton.addEventListener(TouchEvent.TOUCH_TAP, onHighScoresClick);
 			_highScoreButton.addEventListener(MouseEvent.CLICK, onHighScoresClick);
 			
+			_achievementButton = _mainMenu.getChildByName("achievements") as SimpleButton;
+			_achievementButton.addEventListener(TouchEvent.TOUCH_TAP, onAchievementClick);
+			_achievementButton.addEventListener(MouseEvent.CLICK, onAchievementClick);
+			
 			(_highScoreButton.upState as TextField).text = LocaleUtil.localize("highScores");
 			(_highScoreButton.overState as TextField).text = LocaleUtil.localize("highScores");
 			(_highScoreButton.downState as TextField).text = LocaleUtil.localize("highScores");
 			(_highScoreButton.hitTestState as TextField).text = LocaleUtil.localize("highScores");
 			
+			(_achievementButton.upState as TextField).text = LocaleUtil.localize("achievements");
+			(_achievementButton.overState as TextField).text = LocaleUtil.localize("achievements");
+			(_achievementButton.downState as TextField).text = LocaleUtil.localize("achievements");
+			(_achievementButton.hitTestState as TextField).text = LocaleUtil.localize("achievements");
+			
 			if (!GameCenterManager.isSupported) {
 				_highScoreButton.visible = false;
+				_achievementButton.visible = false;
 			}
 		}
 		
 		private function onHighScoresClick(e:Event):void {
 			GameCenterManager.instance.showLeaderboardView();
+		}
+		
+		private function onAchievementClick(e:Event):void {
+			GameCenterManager.instance.showAchievementsView();
 		}
 		
 		private function onStartClick(e:Event):void {

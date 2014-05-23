@@ -25,9 +25,9 @@ package {
 			_googleIdDic["reach10000"] = "CgkImtX1jeAFEAIQAg";
 			_googleIdDic["reach50000"] = "CgkImtX1jeAFEAIQCQ";
 			_googleIdDic["reach100000"] = "CgkImtX1jeAFEAIQAw";
-			_googleIdDic["reach250000"] = "CgkImtX1jeAFEAIQBA";
-			_googleIdDic["reach500000"] = "CgkImtX1jeAFEAIQBQ";
-			_googleIdDic["reach1000000"] = "CgkImtX1jeAFEAIQBg";
+			_googleIdDic["reach150000"] = "CgkImtX1jeAFEAIQBA";
+			_googleIdDic["reach200000"] = "CgkImtX1jeAFEAIQBQ";
+			_googleIdDic["reach300000"] = "CgkImtX1jeAFEAIQBg";
 			_googleIdDic["kill10"] = "CgkImtX1jeAFEAIQCg";
 			_googleIdDic["kill100"] = "CgkImtX1jeAFEAIQCw";
 			_googleIdDic["kill1000"] = "CgkImtX1jeAFEAIQDA";
@@ -122,6 +122,15 @@ package {
 			}
 		}
 		
+		public function showAchievementsView():void {
+			if (GameCenterController.isSupported) {
+				_controller.showAchievementsView();
+			}
+			if (GoogleGames.isSupported()) {
+				GoogleGames.games.showAchievements();
+			}
+		}
+		
 		public function submitScore(score:int):void {
 			var leaderboardName:String = "highScore";
 			if (GameCenterController.isSupported) {
@@ -161,7 +170,7 @@ package {
 			}
 			if (GoogleGames.isSupported()) {
 				trace("senging google achievement: " + achievementName);
-				GoogleGames.games.incrementAchievement(_googleIdDic[achievementName],count);
+				GoogleGames.games.incrementAchievement(_googleIdDic[achievementName], count);
 			}
 		}
 	

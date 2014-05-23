@@ -33,7 +33,7 @@ package {
 			
 			Starling.handleLostContext = true;
 			var viewPort:Rectangle = RectangleUtil.fit(new Rectangle(0, 0, 800, 400), new Rectangle(0, 0, stage.fullScreenWidth, stage.fullScreenHeight), ScaleMode.NO_BORDER);
-			_starling = new Starling(StarlingMain, stage, viewPort);
+			_starling = new Starling(StarlingMain, stage, viewPort, null, "auto", "auto");
 			_starling.stage.stageWidth = 800;
 			_starling.stage.stageHeight = 400;
 			_starling.antiAliasing = 1;

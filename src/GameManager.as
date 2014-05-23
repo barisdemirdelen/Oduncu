@@ -82,10 +82,12 @@ package {
 		private const BOSS_HITBOX:Rectangle = new Rectangle(11, 149, 532, 400);
 		
 		private var _killedTreeCount:int;
+		private var _lastKillCount:int;
 		
 		private const _darbeArray:Array = ["normal", "average", "underwhelming", "overwhelming", "incredible", "amazing", "mindblowing", "proper", "adequate", "solid", "veryGood", "good", "magnificent", "ordinary", "extraordinary", "unbelievable", "insane", "crazy", "weak", "impossible", "critical", "tremendous", "golden", "classy", "sneaky", "deadly", "bruiser"];
 		
 		private var _admob:Admob;
+		private var _massacreTimer:Timer;
 		
 		private static var _instance:GameManager;
 		
@@ -112,6 +114,7 @@ package {
 			_treeCreationRatio = 0.025;
 			_adamSpeed = 0;
 			_killedTreeCount = 0;
+			_lastKillCount = 0;
 			_paused = false;
 			
 			_gameScene = new Sprite();
@@ -187,6 +190,10 @@ package {
 			_gameTimer = new Timer(50);
 			_gameTimer.addEventListener(TimerEvent.TIMER, onTick);
 			_gameTimer.start();
+			
+			_massacreTimer = new Timer(1000);
+			_massacreTimer.addEventListener(TimerEvent.TIMER, onMassacreTimer);
+			_massacreTimer.start();
 		}
 		
 		private function onAdFailed(e:AdmobEvent):void {
@@ -200,6 +207,13 @@ package {
 		private function onAccelerometerUpdate(e:AccelerometerEvent):void {
 			trace(e.accelerationX);
 			_adamSpeed -= e.accelerationX;
+		}
+		
+		private function onMassacreTimer(e:TimerEvent):void {
+			if (_killedTreeCount >= _lastKillCount + 10) {
+				GameCenterManager.instance.unlockAchievement("kill10Sec1");
+			}
+			_lastKillCount = _killedTreeCount;
 		}
 		
 		private function onTick(e:TimerEvent):void {
@@ -369,10 +383,11 @@ package {
 		
 		private function checkAchievements():void {
 			checkScoreAchievementFor(10000);
+			checkScoreAchievementFor(50000);
 			checkScoreAchievementFor(100000);
-			checkScoreAchievementFor(250000);
-			checkScoreAchievementFor(500000);
-			checkScoreAchievementFor(1000000);
+			checkScoreAchievementFor(150000);
+			checkScoreAchievementFor(200000);
+			checkScoreAchievementFor(300000);
 		}
 		
 		private function checkScoreAchievementFor(desiredScore:Number):void {
@@ -475,6 +490,12 @@ package {
 				_gameTimer.removeEventListener(TimerEvent.TIMER, onTick);
 				_gameTimer.stop();
 				_gameTimer = null;
+			}
+			
+			if (_massacreTimer) {
+				_massacreTimer.removeEventListener(TimerEvent.TIMER, onMassacreTimer);
+				_massacreTimer.stop();
+				_massacreTimer = null;
 			}
 			
 			if (_gameScene) {
