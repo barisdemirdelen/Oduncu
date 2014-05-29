@@ -33,15 +33,12 @@ package {
 			FlashStageHelper.add(_mainMenu);
 			
 			_startButton = _mainMenu.getChildByName("startButton") as SimpleButton;
-			_startButton.addEventListener(TouchEvent.TOUCH_TAP, onStartClick);
 			_startButton.addEventListener(MouseEvent.CLICK, onStartClick);
 			
 			_highScoreButton = _mainMenu.getChildByName("highScores") as SimpleButton;
-			_highScoreButton.addEventListener(TouchEvent.TOUCH_TAP, onHighScoresClick);
 			_highScoreButton.addEventListener(MouseEvent.CLICK, onHighScoresClick);
 			
 			_achievementButton = _mainMenu.getChildByName("achievements") as SimpleButton;
-			_achievementButton.addEventListener(TouchEvent.TOUCH_TAP, onAchievementClick);
 			_achievementButton.addEventListener(MouseEvent.CLICK, onAchievementClick);
 			
 			(_highScoreButton.upState as TextField).text = LocaleUtil.localize("highScores");
@@ -69,7 +66,6 @@ package {
 		}
 		
 		private function onStartClick(e:Event):void {
-			_startButton.removeEventListener(TouchEvent.TOUCH_TAP, onStartClick);
 			_startButton.removeEventListener(MouseEvent.CLICK, onStartClick);
 			
 			SoundManager.instance.playTestereTurnOnSound();
@@ -82,6 +78,10 @@ package {
 		}
 		
 		override protected function destroy(e:Event = null):void {
+			_startButton.removeEventListener(MouseEvent.CLICK, onStartClick);
+			_highScoreButton.removeEventListener(MouseEvent.CLICK, onHighScoresClick);
+			_achievementButton.removeEventListener(MouseEvent.CLICK, onAchievementClick);
+			
 			if (_oynakTimer) {
 				_oynakTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, destroy);
 				_oynakTimer.stop();

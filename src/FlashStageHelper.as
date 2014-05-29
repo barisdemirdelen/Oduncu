@@ -24,11 +24,6 @@ package {
 				}
 			}
 			
-			//var bounds:Rectangle = displayObject.getBounds(displayObject);
-			//bounds
-			
-		
-			
 			if (parent) {
 				parent.addChild(displayObject);
 			} else {

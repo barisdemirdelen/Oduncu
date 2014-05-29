@@ -27,7 +27,6 @@ package {
 			_skipButton = new skipButtonSprite();
 			_skipButton.x = FlashStageHelper.stage.fullScreenWidth - 100;
 			_skipButton.y = FlashStageHelper.stage.fullScreenHeight - 100;
-			_skipButton.addEventListener(TouchEvent.TOUCH_TAP, onSkipClick);
 			_skipButton.addEventListener(MouseEvent.CLICK, onSkipClick);
 			FlashStageHelper.add(_skipButton);
 			
@@ -52,8 +51,7 @@ package {
 			}
 			
 			if (_skipButton) {
-				_skipButton.removeEventListener(TouchEvent.TOUCH_TAP, onSkipClick);
-				_skipButton.removeEventListener(MouseEvent.MOUSE_DOWN, onSkipClick);
+				_skipButton.removeEventListener(MouseEvent.CLICK, onSkipClick);
 				FlashStageHelper.stage.removeChild(_skipButton);
 				_skipButton = null;
 			}
