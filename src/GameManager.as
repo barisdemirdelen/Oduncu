@@ -382,12 +382,20 @@ package {
 		}
 		
 		private function checkAchievements():void {
-			checkScoreAchievementFor(10000);
-			checkScoreAchievementFor(50000);
-			checkScoreAchievementFor(100000);
-			checkScoreAchievementFor(150000);
-			checkScoreAchievementFor(200000);
-			checkScoreAchievementFor(300000);
+			if (Capabilities.manufacturer.toLowerCase().indexOf("ios") != -1) { //ios
+				checkScoreAchievementFor(10000);
+				checkScoreAchievementFor(100000);
+				checkScoreAchievementFor(250000);
+				checkScoreAchievementFor(500000);
+				checkScoreAchievementFor(1000000);
+			} else {
+				checkScoreAchievementFor(10000);
+				checkScoreAchievementFor(50000);
+				checkScoreAchievementFor(100000);
+				checkScoreAchievementFor(150000);
+				checkScoreAchievementFor(200000);
+				checkScoreAchievementFor(300000);
+			}
 		}
 		
 		private function checkScoreAchievementFor(desiredScore:Number):void {

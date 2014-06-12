@@ -18,8 +18,8 @@ set AND_SIGNING_OPTIONS=-storetype pkcs12 -keystore "%AND_CERT_FILE%" -storepass
 set IOS_DIST_CERT_FILE=cert\ios_distribution.p12
 set IOS_DEV_CERT_FILE=cert\ios_development.p12
 set IOS_DEV_CERT_PASS=barbar2B
-set IOS_PROVISION=cert\Oduncu.mobileprovision
-::set IOS_PROVISION=cert\OduncuDist.mobileprovision
+::set IOS_PROVISION=cert\Oduncu.mobileprovision
+set IOS_PROVISION=cert\OduncuDist.mobileprovision
 set IOS_ICONS=icons/ios
 
 set IOS_DEV_SIGNING_OPTIONS=-storetype pkcs12 -keystore "%IOS_DEV_CERT_FILE%" -storepass %IOS_DEV_CERT_PASS% -provisioning-profile %IOS_PROVISION%

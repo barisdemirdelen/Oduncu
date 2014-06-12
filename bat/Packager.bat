@@ -42,8 +42,8 @@ echo Packaging: %OUTPUT%
 echo using certificate: %CERT_FILE%...
 echo.
 ::set _JAVA_OPTIONS=-Xms1024m -Xmx1024m -XX:MaxPermSize=128m -XX:PermSize=64m
-call adt -package -target %TYPE%%TARGET% %OPTIONS% %SIGNING_OPTIONS% "%OUTPUT%" "%APP_XML%" %FILE_OR_DIR% -extdir ane/
-::call adt -package -target %TYPE%%TARGET% %OPTIONS% -useLegacyAOT no %SIGNING_OPTIONS% "%OUTPUT%" "%APP_XML%" %FILE_OR_DIR% -extdir ane/
+::call adt -package -target %TYPE%%TARGET% %OPTIONS% %SIGNING_OPTIONS% "%OUTPUT%" "%APP_XML%" %FILE_OR_DIR% -extdir ane/
+call adt -package -target %TYPE%%TARGET% %OPTIONS% -useLegacyAOT no %SIGNING_OPTIONS% "%OUTPUT%" "%APP_XML%" %FILE_OR_DIR% -extdir ane/
 echo.
 if errorlevel 1 goto failed
 goto end
